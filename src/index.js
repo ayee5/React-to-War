@@ -2,19 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class Card extends React.Component {
-  render() {
-    return (
-      <div>
-        {this.props.rank} of {this.props.suit} has value of {this.props.value}
-      </div>
-    );
+class Card {
+  constructor(rank, suit, value) {
+    this.rank = rank;
+    this.suit = suit;
+    this.value = value;
   }
 }
 
-class Deck extends React.Component {
+class Deck {
+  constructor(deckNum) {
+    this.deckNum = deckNum;
+    this.cards = this.initializeDeck(deckNum);
+  }
 
-  initializeCards(deckNum) {
+  initializeDeck(deckNum) {
     const suits = ["Spade", "Heart", "Club", "Diamond"];
     const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "Ace"];
 
@@ -22,19 +24,17 @@ class Deck extends React.Component {
     for(let d = 0; d < deckNum; d++) {
       for (let r = 0; r < ranks.length; r++) {
         for (let s = 0; s < suits.length; s++) {
-          deckOfCards.push(<Card rank={ranks[r]} suit={suits[s]} value={r} />);
+          deckOfCards.push(new Card(ranks[r], suits[s], r));
         }
       }
     }
 
     return deckOfCards;
   }
-
-  render() {
-    return (
-      this.initializeCards(this.props.num)
-    );
-  }
 }
 
-ReactDOM.render(<Deck num="2" />, document.getElementById("root"));
+let deck = new Deck(2);
+let testCard = deck.cards[2];
+let testStr =  testCard.rank + " of " + testCard.suit + " has value of " + testCard.value;
+
+ReactDOM.render(testStr, document.getElementById("root"));
