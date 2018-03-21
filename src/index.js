@@ -18,7 +18,7 @@ class Deck {
 
   initializeDeck(deckNum) {
     const suits = ["Spade", "Heart", "Club", "Diamond"];
-    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "Ace"];
+    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"];
 
     var deckOfCards = [];
     for(let d = 0; d < deckNum; d++) {
@@ -31,10 +31,37 @@ class Deck {
 
     return deckOfCards;
   }
+
+  drawCard(index) {
+    return this.cards[index];
+  }
+
+  shuffle() {
+    let i = 0, j = 0, temp = null;
+    for (i = this.cards.length - 1; i > 0; i -= 1) {
+      j = Math.floor(Math.random() * (i + 1))
+      temp = this.cards[i];
+      this.cards[i] = this.cards[j];
+      this.cards[j] = temp;
+    }
+  }
 }
 
-let deck = new Deck(2);
-let testCard = deck.cards[2];
-let testStr =  testCard.rank + " of " + testCard.suit + " has value of " + testCard.value;
+class Game extends React.Component {
+  render() {
+    let testArr = [];
+    let deck = new Deck(1);
+    deck.shuffle();
+    for(let t=0; t<deck.cards.length; t++)
+    {
+      testArr.push(<div>{deck.cards[t].rank} of {deck.cards[t].suit} val => {deck.cards[t].value}</div>)
+    }
+      return (
+      testArr
+    );
+  }
+}
 
-ReactDOM.render(testStr, document.getElementById("root"));
+//let testStr =  testCard.rank + " of " + testCard.suit + " has value of " + testCard.value;
+
+ReactDOM.render(<Game />, document.getElementById("root"));
