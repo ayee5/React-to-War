@@ -74,15 +74,19 @@ class War extends React.Component {
   }
 
   onClick() {
-    this.setState({drawnCards:this.state.drawnCards + 1});
+    this.setState({drawnCards:this.state.drawnCards + 2});
   }
 
   render() {
     const currDeck = this.state.deck;
-    const drawnCard = currDeck.drawCard(this.state.drawnCards);
+    const dealerCard = currDeck.drawCard(this.state.drawnCards);
+    const playerCard = currDeck.drawCard(this.state.drawnCards+1);
     return [
       <div>
-        Drawn Card is => {drawnCard.rank} of {drawnCard.suit} has value of {drawnCard.value}
+        Dealer Card is => {dealerCard.rank} of {dealerCard.suit} has value of {dealerCard.value}
+      </div>,
+      <div>
+        Player Card is => {playerCard.rank} of {playerCard.suit} has value of {playerCard.value}
       </div>,
       <DrawButton onClick={() => this.onClick()}/>
     ];
