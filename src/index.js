@@ -2,6 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+function DrawButton(props) {
+  return (
+    <button onClick={props.onClick}>
+      Draw
+    </button>
+  );
+}
+
 class Card {
   constructor(rank, suit, value) {
     this.rank = rank;
@@ -14,6 +22,7 @@ class Deck {
   constructor(deckNum) {
     this.deckNum = deckNum;
     this.cards = this.initializeDeck(deckNum);
+    this.shuffle();
   }
 
   initializeDeck(deckNum) {
@@ -47,21 +56,39 @@ class Deck {
   }
 }
 
-class Game extends React.Component {
-  render() {
-    let testArr = [];
-    let deck = new Deck(1);
-    deck.shuffle();
-    for(let t=0; t<deck.cards.length; t++)
-    {
-      testArr.push(<div>{deck.cards[t].rank} of {deck.cards[t].suit} val => {deck.cards[t].value}</div>)
-    }
-      return (
-      testArr
+class War extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      drawnCards : 0,
+      deck: new Deck(props.deckNum)
+    };
+  }
+
+  drawButton(props) {
+    return (
+      <button onClick={props.onClick}>
+        Draw
+      </button>
     );
+  }
+
+  onClick() {
+    this.setState({drawnCards:this.state.drawnCards + 1});
+  }
+
+  render() {
+    const currDeck = this.state.deck;
+    const drawnCard = currDeck.drawCard(this.state.drawnCards);
+    return [
+      <div>
+        Drawn Card is => {drawnCard.rank} of {drawnCard.suit} has value of {drawnCard.value}
+      </div>,
+      <DrawButton onClick={() => this.onClick()}/>
+    ];
   }
 }
 
 //let testStr =  testCard.rank + " of " + testCard.suit + " has value of " + testCard.value;
 
-ReactDOM.render(<Game />, document.getElementById("root"));
+ReactDOM.render(<War deckNum={1} />, document.getElementById("root"));
