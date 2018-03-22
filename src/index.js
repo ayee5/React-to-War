@@ -15,6 +15,7 @@ class Card {
     this.rank = rank;
     this.suit = suit;
     this.value = value;
+    this.imageName = rank+suit+'.png';
   }
 }
 
@@ -27,7 +28,7 @@ class Deck {
 
   initializeDeck(deckNum) {
     const suits = ["Spade", "Heart", "Club", "Diamond"];
-    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"];
+    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
 
     var deckOfCards = [];
     for(let d = 0; d < deckNum; d++) {
@@ -81,15 +82,17 @@ class War extends React.Component {
     const currDeck = this.state.deck;
     const dealerCard = currDeck.drawCard(this.state.drawnCards);
     const playerCard = currDeck.drawCard(this.state.drawnCards+1);
-    return [
+    return (
       <div>
-        Dealer Card is => {dealerCard.rank} of {dealerCard.suit} has value of {dealerCard.value}
-      </div>,
-      <div>
-        Player Card is => {playerCard.rank} of {playerCard.suit} has value of {playerCard.value}
-      </div>,
-      <DrawButton onClick={() => this.onClick()}/>
-    ];
+        <div className="cardholder">
+          <img src={require('./cards/'+dealerCard.imageName)} />
+        </div>
+        <div className="cardholder">
+          <img src={require('./cards/'+playerCard.imageName)} />
+        </div>
+        <DrawButton onClick={() => this.onClick()}/>
+      </div>
+    );
   }
 }
 
