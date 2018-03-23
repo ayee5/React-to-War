@@ -78,6 +78,25 @@ class War extends React.Component {
     this.setState({drawnCards:this.state.drawnCards + 2});
   }
 
+  determineGameStatus(dealerCard, playerCard)
+  {
+    if(dealerCard.value > playerCard.value) {
+      return <p>Dealer Wins</p>
+    }
+    else if (dealerCard.value < playerCard.value) {
+      return <p>Player Wins</p>
+    }
+    else {
+      return (
+        <div>
+          <p>Tied</p>
+          <button>Go to War</button>
+          <button>Surrender</button>
+        </div>
+      )
+    }
+  }
+
   render() {
     const currDeck = this.state.deck;
     const dealerCard = currDeck.drawCard(this.state.drawnCards);
@@ -85,10 +104,17 @@ class War extends React.Component {
     return (
       <div>
         <div className="cardholder">
+          <p>Dealer</p>
           <img src={require('./cards/'+dealerCard.imageName)} />
         </div>
+        <br/>
         <div className="cardholder">
+          <p>Player</p>
           <img src={require('./cards/'+playerCard.imageName)} />
+        </div>
+        <br/>
+        <div>
+          {this.determineGameStatus(dealerCard, playerCard)}
         </div>
         <DrawButton onClick={() => this.onClick()}/>
       </div>
