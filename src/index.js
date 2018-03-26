@@ -102,21 +102,18 @@ class War extends React.Component {
     const dealerCard = currDeck.drawCard(this.state.drawnCards);
     const playerCard = currDeck.drawCard(this.state.drawnCards+1);
     return (
-      <div>
-        <div className="cardholder">
-          <p>Dealer</p>
-          <img src={require('./cards/'+dealerCard.imageName)} />
+      <div className="main">
+        <img className="center" src={require('./cards/table.png')} />
+        <div className="dealerCardHolder">
+          <img className="cards" src={require('./cards/'+dealerCard.imageName)} />
         </div>
-        <br/>
-        <div className="cardholder">
-          <p>Player</p>
-          <img src={require('./cards/'+playerCard.imageName)} />
+        <div className="playerardHolder">
+          <img className="cards" src={require('./cards/'+playerCard.imageName)} />
         </div>
-        <br/>
-        <div>
+        <div className="statusDiv">
           {this.determineGameStatus(dealerCard, playerCard)}
+          <DrawButton onClick={() => this.onClick()}/>
         </div>
-        <DrawButton onClick={() => this.onClick()}/>
       </div>
     );
   }
