@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-function DrawButton(props) {
+function CreateButton(props) {
   return (
     <button onClick={props.onClick}>
-      Draw
+      {props.value}
     </button>
   );
 }
@@ -68,23 +68,7 @@ class War extends React.Component {
     };
   }
 
-  drawButton(props) {
-    return (
-      <button onClick={props.onClick}>
-        Shuffle Deck
-      </button>
-    );
-  }
-
-  drawButton(props) {
-    return (
-      <button onClick={props.onClick}>
-        Draw
-      </button>
-    );
-  }
-
-  onClick() {
+  onClickDrawButton() {
     const currDeck = this.state.deck;
     const dealerCard = currDeck.drawCard(this.state.drawnCards);
     const playerCard = currDeck.drawCard(this.state.drawnCards+1);
@@ -92,6 +76,16 @@ class War extends React.Component {
       drawnCards:this.state.drawnCards + 2,
       playerCard:playerCard,
       dealerCard:dealerCard
+    });
+  }
+
+  onClickShuffleButton() {
+    let deckNum = this.state.deck.deckNum;
+    this.setState({
+      drawnCards : 0,
+      deck: new Deck(deckNum),
+      playerCard: null,
+      dealerCard: null
     });
   }
 
@@ -145,7 +139,8 @@ class War extends React.Component {
         {this.renderCards()}
         <div className="statusDiv">
           {this.determineGameStatus(this.state.dealerCard, this.state.playerCard)}
-          <DrawButton onClick={() => this.onClick()}/>
+          <CreateButton onClick={() => this.onClickDrawButton()} value={"Draw Card"}/>
+          <CreateButton onClick={() => this.onClickShuffleButton()} value={"Shuffle"}/>
         </div>
       </div>
     );
