@@ -69,6 +69,8 @@ class War extends React.Component {
   }
 
   onClickDrawButton() {
+    if(this.state.drawnCards >= this.state.deck.cards.length) return;
+
     const currDeck = this.state.deck;
     const dealerCard = currDeck.drawCard(this.state.drawnCards);
     const playerCard = currDeck.drawCard(this.state.drawnCards+1);
@@ -94,6 +96,10 @@ class War extends React.Component {
     if(this.state.drawnCards == 0)
     {
       return <p>Welcome to War</p>
+    }
+    if(this.state.drawnCards >= this.state.deck.cards.length)
+    {
+        return  <p>Out of Cards</p>;
     }
     else if(dealerCard.value > playerCard.value) {
       return <p>Dealer Wins</p>
@@ -132,7 +138,6 @@ class War extends React.Component {
   }
 
   render() {
-
     return (
       <div className="main">
         <img className="center" src={require('./cards/table.png')} />
