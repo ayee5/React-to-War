@@ -62,8 +62,18 @@ class War extends React.Component {
     super(props);
     this.state = {
       drawnCards : 0,
-      deck: new Deck(props.deckNum)
+      deck: new Deck(props.deckNum),
+      playerCard: null,
+      dealerCard: null
     };
+  }
+
+  drawButton(props) {
+    return (
+      <button onClick={props.onClick}>
+        Shuffle Deck
+      </button>
+    );
   }
 
   drawButton(props) {
@@ -75,12 +85,23 @@ class War extends React.Component {
   }
 
   onClick() {
-    this.setState({drawnCards:this.state.drawnCards + 2});
+    const currDeck = this.state.deck;
+    const dealerCard = currDeck.drawCard(this.state.drawnCards);
+    const playerCard = currDeck.drawCard(this.state.drawnCards+1);
+    this.setState({
+      drawnCards:this.state.drawnCards + 2,
+      playerCard:playerCard,
+      dealerCard:dealerCard
+    });
   }
 
   determineGameStatus(dealerCard, playerCard)
   {
-    if(dealerCard.value > playerCard.value) {
+    if(this.state.drawnCards == 0)
+    {
+      return <p>Welcome to War</p>
+    }
+    else if(dealerCard.value > playerCard.value) {
       return <p>Dealer Wins</p>
     }
     else if (dealerCard.value < playerCard.value) {
@@ -97,21 +118,33 @@ class War extends React.Component {
     }
   }
 
+  renderCards() {
+    if(this.state.drawnCards == 0) {
+        return (
+          null
+        )
+    }
+
+    return (
+      <div>
+        <div className="dealerCardHolder">
+          <img className="cards" src={require('./cards/'+ this.state.dealerCard.imageName)} />
+        </div>
+        <div className="playerardHolder">
+          <img className="cards" src={require('./cards/'+ this.state.playerCard.imageName)} />
+        </div>
+      </div>
+    )
+  }
+
   render() {
-    const currDeck = this.state.deck;
-    const dealerCard = currDeck.drawCard(this.state.drawnCards);
-    const playerCard = currDeck.drawCard(this.state.drawnCards+1);
+
     return (
       <div className="main">
         <img className="center" src={require('./cards/table.png')} />
-        <div className="dealerCardHolder">
-          <img className="cards" src={require('./cards/'+dealerCard.imageName)} />
-        </div>
-        <div className="playerardHolder">
-          <img className="cards" src={require('./cards/'+playerCard.imageName)} />
-        </div>
+        {this.renderCards()}
         <div className="statusDiv">
-          {this.determineGameStatus(dealerCard, playerCard)}
+          {this.determineGameStatus(this.state.dealerCard, this.state.playerCard)}
           <DrawButton onClick={() => this.onClick()}/>
         </div>
       </div>
