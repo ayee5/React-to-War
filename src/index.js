@@ -4,7 +4,7 @@ import './index.css';
 
 function CreateButton(props) {
   return (
-    <button onClick={props.onClick}>
+    <button className={props.className} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -141,11 +141,11 @@ class War extends React.Component {
     return (
       <div className="main">
         <img className="center" src={require('./cards/table.png')} />
+        <CreateButton className="bottomright" onClick={() => this.onClickDrawButton()} value={"Draw Card"}/>
+        <CreateButton className="bottomleft" onClick={() => this.onClickShuffleButton()} value={"Shuffle"}/>
         {this.renderCards()}
         <div className="statusDiv">
           {this.determineGameStatus(this.state.dealerCard, this.state.playerCard)}
-          <CreateButton onClick={() => this.onClickDrawButton()} value={"Draw Card"}/>
-          <CreateButton onClick={() => this.onClickShuffleButton()} value={"Shuffle"}/>
         </div>
       </div>
     );

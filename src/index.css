@@ -5,6 +5,26 @@ body
   display: block;
 }
 
+.bottomright
+{
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  font-size: 18px;
+  z-index: 4;
+
+}
+
+.bottomleft
+{
+  position: absolute;
+  bottom: 8px;
+  left: 16px;
+  font-size: 18px;
+  z-index: 4;
+}
+
+
 .center
 {
   position: absolute;
@@ -25,8 +45,8 @@ body
   width: 15%;
   height: 20%;
   margin: auto;
-  top: 50%;
-  left: 0;
+  top: 35%;
+  left: 25%;
   right: 0;
   bottom: 0;
   z-index: 2
@@ -40,9 +60,9 @@ body
   height: 20%;
   margin: auto;
   top: 0;
-  left: 0;
+  left: 8%;
   right: 0;
-  bottom: 50%;
+  bottom: 60%;
   z-index: 2
 }
 
