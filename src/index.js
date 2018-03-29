@@ -63,35 +63,35 @@ class War extends React.Component {
     this.state = {
       drawnCards : 0,
       deck: new Deck(props.deckNum),
-      playerCard: null,
-      dealerCard: null
+      playerCards: null,
+      dealerCards: null
     };
   }
 
-  onClickDrawButton() {
+  onClickDrawInitial() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
     const currDeck = this.state.deck;
-    const dealerCard = currDeck.drawCard(this.state.drawnCards);
-    const playerCard = currDeck.drawCard(this.state.drawnCards+1);
+    const dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
+    const playerFirstCard = currDeck.drawCard(this.state.drawnCards+1);
     this.setState({
       drawnCards:this.state.drawnCards + 2,
-      playerCard:playerCard,
-      dealerCard:dealerCard
+      playerCards:[playerFirstCard, null],
+      dealerCards:[dealerFirstCard, null]
     });
   }
 
-  onClickShuffleButton() {
+  onClickShuffle() {
     let deckNum = this.state.deck.deckNum;
     this.setState({
       drawnCards : 0,
       deck: new Deck(deckNum),
-      playerCard: null,
-      dealerCard: null
+      playerCards: null,
+      dealerCards: null
     });
   }
 
-  determineGameStatus(dealerCard, playerCard)
+  determineGameStatus(dealerCards, playerCards)
   {
     if(this.state.drawnCards == 0)
     {
@@ -101,10 +101,10 @@ class War extends React.Component {
     {
         return  <p>Out of Cards</p>;
     }
-    else if(dealerCard.value > playerCard.value) {
+    else if(dealerCards[0].value > playerCards[0].value) {
       return <p>Dealer Wins</p>
     }
-    else if (dealerCard.value < playerCard.value) {
+    else if (dealerCards[0].value < playerCards[0].value) {
       return <p>Player Wins</p>
     }
     else {
@@ -128,10 +128,10 @@ class War extends React.Component {
     return (
       <div>
         <div className="dealerCardHolder">
-          <img className="cards" src={require('./cards/'+ this.state.dealerCard.imageName)} />
+          <img className="cards" src={require('./cards/'+ this.state.dealerCards[0].imageName)} />
         </div>
-        <div className="playerardHolder">
-          <img className="cards" src={require('./cards/'+ this.state.playerCard.imageName)} />
+        <div className="playerCardHolder">
+          <img className="cards" src={require('./cards/'+ this.state.playerCards[0].imageName)} />
         </div>
       </div>
     )
@@ -141,11 +141,11 @@ class War extends React.Component {
     return (
       <div className="main">
         <img className="center" src={require('./cards/table.png')} />
-        <CreateButton className="bottomright" onClick={() => this.onClickDrawButton()} value={"Draw Card"}/>
-        <CreateButton className="bottomleft" onClick={() => this.onClickShuffleButton()} value={"Shuffle"}/>
+        <CreateButton className="bottomright" onClick={() => this.onClickDrawInitial()} value={"Draw Card"}/>
+        <CreateButton className="bottomleft" onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
         {this.renderCards()}
         <div className="statusDiv">
-          {this.determineGameStatus(this.state.dealerCard, this.state.playerCard)}
+          {this.determineGameStatus(this.state.dealerCards, this.state.playerCards)}
         </div>
       </div>
     );
