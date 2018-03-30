@@ -202,6 +202,4 @@ class War extends React.Component {
   }
 }
 
-//let testStr =  testCard.rank + " of " + testCard.suit + " has value of " + testCard.value;
-
 ReactDOM.render(<War deckNum={1} />, document.getElementById("root"));
