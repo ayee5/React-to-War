@@ -64,11 +64,12 @@ class War extends React.Component {
       drawnCards : 0,
       deck: new Deck(props.deckNum),
       playerCards: new Array(2),
-      dealerCards: new Array(2)
+      dealerCards: new Array(2),
+      surrenderStatus: false
     };
   }
 
-  onClickDrawInitial() {
+  onClickDrawInitialCard() {
     if(this.state.drawnCards >= this.state.deck.cards.length - 4) return;
 
     const currDeck = this.state.deck;
@@ -77,7 +78,8 @@ class War extends React.Component {
     this.setState({
       drawnCards:this.state.drawnCards + 2,
       playerCards:[playerFirstCard, null],
-      dealerCards:[dealerFirstCard, null]
+      dealerCards:[dealerFirstCard, null],
+      surrenderStatus: false
     });
   }
 
@@ -94,13 +96,22 @@ class War extends React.Component {
     });
   }
 
+  onClickSurrender() {
+    if(this.state.drawnCards >= this.state.deck.cards.length) return;
+
+    this.setState({
+      surrenderStatus: true
+    });
+  }
+
   onClickShuffle() {
     let deckNum = this.state.deck.deckNum;
     this.setState({
       drawnCards : 0,
       deck: new Deck(deckNum),
       playerCards: new Array(2),
-      dealerCards: new Array(2)
+      dealerCards: new Array(2),
+      surrenderStatus: false
     });
   }
 
@@ -124,7 +135,15 @@ class War extends React.Component {
     }
     else
     {
-        if(this.state.playerCards[1] == null) //tied
+        if(this.state.surrenderStatus == true)
+        {
+          return (
+            <div>
+              <p>Player loses due to Surrender</p>
+            </div>
+          )
+        }
+        else if(this.state.playerCards[1] == null) //tied
         {
             return (
               <div>
@@ -187,27 +206,34 @@ class War extends React.Component {
 
   renderButtonLayout()
   {
-    let drawButton;
+    let buttonContainer;
     if(this.state.playerCards[0] == null) //initial load
     {
-      drawButton = <CreateButton className="bottomright" onClick={() => this.onClickDrawInitial()} value={"Draw Card"}/>;
+      buttonContainer = <div className="bottomright">
+                          <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
+                        </div>;
     }
     else
     {
-      if(this.state.playerCards[0].value == this.state.dealerCards[0].value && this.state.playerCards[1] == null) //War
+      if(this.state.playerCards[0].value == this.state.dealerCards[0].value && this.state.playerCards[1] == null && this.state.surrenderStatus == false) //War
       {
-        drawButton = drawButton = <CreateButton className="bottomright" onClick={() => this.onClickWar()} value={"Go To War"}/>;
+        buttonContainer = <div className="bottomright">
+                            <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
+                            <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
+                          </div>;
       }
       else //After War or Deal next hand
       {
-        drawButton = <CreateButton className="bottomright" onClick={() => this.onClickDrawInitial()} value={"Draw Card"}/>;
+        buttonContainer = <div className="bottomright">
+                            <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
+                          </div>;
       }
     }
 
 
     return (
         <div>
-          {drawButton}}
+          {buttonContainer}
           <CreateButton className="bottomleft" onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
         </div>
     )
