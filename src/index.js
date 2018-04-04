@@ -69,7 +69,7 @@ class War extends React.Component {
   }
 
   onClickDrawInitial() {
-    if(this.state.drawnCards >= this.state.deck.cards.length) return;
+    if(this.state.drawnCards >= this.state.deck.cards.length - 4) return;
 
     const currDeck = this.state.deck;
     const dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
@@ -104,29 +104,54 @@ class War extends React.Component {
     });
   }
 
-  determineGameStatus(dealerCards, playerCards)
+  determineGameStatus()
   {
-    if(this.state.drawnCards == 0)
+    if(this.state.drawnCards == 0)//game has not started
     {
       return <p>Welcome to War</p>
     }
-    if(this.state.drawnCards >= this.state.deck.cards.length)
+    else if(this.state.drawnCards >= this.state.deck.cards.length - 4) //out of cards
     {
         return  <p>Out of Cards</p>;
     }
-    else if(dealerCards[0].value > playerCards[0].value) {
+    else if(this.state.dealerCards[0].value > this.state.playerCards[0].value) //dealer wins
+    {
       return <p>Dealer Wins</p>
     }
-    else if (dealerCards[0].value < playerCards[0].value) {
+    else if(this.state.dealerCards[0].value < this.state.playerCards[0].value) //player wins
+    {
       return <p>Player Wins</p>
     }
-    else {
-      return (
-        <div>
-          <p>Tied</p>
-        </div>
-      )
-    }
+    else
+    {
+        if(this.state.playerCards[1] == null) //tied
+        {
+            return (
+              <div>
+                <p>Tied</p>
+              </div>
+            )
+        }
+        else
+        {
+            if(this.state.playerCards[1].value >= this.state.dealerCards[1].value) //player wins War
+            {
+              return (
+                <div>
+                  <p>Player wins War</p>
+                </div>
+              )
+            }
+            else  //Dealer wins War
+            {
+              return (
+                <div>
+                  <p>Dealer wins War</p>
+                </div>
+              )
+            }
+          }
+      }
   }
 
   renderCards() {
@@ -202,4 +227,4 @@ class War extends React.Component {
   }
 }
 
-ReactDOM.render(<War deckNum={1} />, document.getElementById("root"));
+ReactDOM.render(<War deckNum={4} />, document.getElementById("root"));
