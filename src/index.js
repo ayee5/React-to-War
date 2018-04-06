@@ -113,16 +113,16 @@ class War extends React.Component {
   onClickDrawInitialCard() {
     if(this.state.drawnCards >= this.state.deck.cards.length - 4) return;
 
-    const currDeck = this.state.deck;
-    const dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
-    const playerFirstCard = currDeck.drawCard(this.state.drawnCards+1);
+    let currDeck = this.state.deck;
+    let dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
+    let playerFirstCard = currDeck.drawCard(this.state.drawnCards+1);
 
-    const player = this.state.player;
+    let player = this.state.player;
     player.setFirstCard(playerFirstCard);
     player.setSecondCard(null);
     player.setSurrenderStatus(false);
 
-    const dealer = this.state.dealer;
+    let dealer = this.state.dealer;
     dealer.setFirstCard(dealerFirstCard);
     dealer.setSecondCard(null);
 
@@ -136,14 +136,14 @@ class War extends React.Component {
   onClickWar() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
-    const currDeck = this.state.deck;
-    const dealerSecondCard = currDeck.drawCard(this.state.drawnCards);
-    const playerSecondCard = currDeck.drawCard(this.state.drawnCards+1);
+    let currDeck = this.state.deck;
+    let dealerSecondCard = currDeck.drawCard(this.state.drawnCards);
+    let playerSecondCard = currDeck.drawCard(this.state.drawnCards+1);
 
-    const player = this.state.player;
+    let player = this.state.player;
     player.setSecondCard(playerSecondCard);
 
-    const dealer = this.state.dealer;
+    let dealer = this.state.dealer;
     dealer.setSecondCard(dealerSecondCard);
 
     this.setState({
@@ -156,7 +156,7 @@ class War extends React.Component {
   onClickSurrender() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
-    const player = this.state.player;
+    let player = this.state.player;
     player.setSurrenderStatus(true);
 
     this.setState({
@@ -176,13 +176,13 @@ class War extends React.Component {
 
   determineGameStatus()
   {
-    const player = this.state.player;
-    const playerFirstCard = player.getFirstCard();
-    const playerSecondCard = player.getSecondCard();
+    let player = this.state.player;
+    let playerFirstCard = player.getFirstCard();
+    let playerSecondCard = player.getSecondCard();
 
-    const dealer = this.state.dealer;
-    const dealerFirstCard = dealer.getFirstCard();
-    const dealerSecondCard = dealer.getSecondCard();
+    let dealer = this.state.dealer;
+    let dealerFirstCard = dealer.getFirstCard();
+    let dealerSecondCard = dealer.getSecondCard();
 
     if(this.state.drawnCards == 0)//game has not started
     {
@@ -247,13 +247,13 @@ class War extends React.Component {
         )
     }
 
-    const player = this.state.player;
-    const playerFirstCard = player.getFirstCard();
-    const playerSecondCard = player.getSecondCard();
+    let player = this.state.player;
+    let playerFirstCard = player.getFirstCard();
+    let playerSecondCard = player.getSecondCard();
 
-    const dealer = this.state.dealer;
-    const dealerFirstCard = dealer.getFirstCard();
-    const dealerSecondCard = dealer.getSecondCard();
+    let dealer = this.state.dealer;
+    let dealerFirstCard = dealer.getFirstCard();
+    let dealerSecondCard = dealer.getSecondCard();
 
     //populate 2nd Card when user decides to go to War
     let player2ndCard = (playerSecondCard == null) ?
@@ -282,13 +282,13 @@ class War extends React.Component {
   renderButtonLayout()
   {
     let buttonContainer;
-    const player = this.state.player;
-    const playerFirstCard = player.getFirstCard();
-    const playerSecondCard = player.getSecondCard();
+    let player = this.state.player;
+    let playerFirstCard = player.getFirstCard();
+    let playerSecondCard = player.getSecondCard();
 
-    const dealer = this.state.dealer;
-    const dealerFirstCard = dealer.getFirstCard();
-    const dealerSecondCard = dealer.getSecondCard();
+    let dealer = this.state.dealer;
+    let dealerFirstCard = dealer.getFirstCard();
+    let dealerSecondCard = dealer.getSecondCard();
 
     if(playerFirstCard == null) //initial load
     {
