@@ -2,6 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+const styles = {
+  hide: {
+    display: 'none'
+  },
+  show: {
+    display: 'block'
+  }
+}
+
 function CreateButton(props) {
   return (
     <button className={props.className} onClick={props.onClick}>
@@ -24,8 +33,8 @@ class Player
   constructor() {
     this.firstCard = null;
     this.secondCard = null;
-    this.showFirst = false;
-    this.showSecond = false;
+    this.showFirstCard = false;
+    this.showSecondCard = false;
     this.surrenderStatus = false
   }
 
@@ -44,6 +53,16 @@ class Player
     this.surrenderStatus = status;
   }
 
+  setShowFirstCard(status)
+  {
+    this.showFirstCard = status;
+  }
+
+  setShowSecondCard(status)
+  {
+    this.showSecondCard = status;
+  }
+
   getFirstCard()
   {
     return this.firstCard;
@@ -57,6 +76,16 @@ class Player
   getSurrenderStatus(status)
   {
     return this.surrenderStatus;
+  }
+
+  getShowFirstCard()
+  {
+    return this.showFirstCard;
+  }
+
+  getShowSecondCard()
+  {
+    return this.showSecondCard;
   }
 }
 
@@ -110,6 +139,25 @@ class War extends React.Component {
     };
   }
 
+  //Add card dealing effect by using timer to show hide cards
+  showHideCardAnimation(dealer1st, dealer2nd, player1st, player2nd, time)
+  {
+    let player = this.state.player;
+    let dealer = this.state.dealer;
+
+    setTimeout(() => {
+      dealer.setShowFirstCard(dealer1st);
+      dealer.setShowSecondCard(dealer2nd);
+      player.setShowFirstCard(player1st);
+      player.setShowSecondCard(player2nd);
+
+      this.setState({
+        dealer: dealer,
+        player: player
+      });
+    }, time);
+  }
+
   onClickDrawInitialCard() {
     if(this.state.drawnCards >= this.state.deck.cards.length - 4) return;
 
@@ -121,6 +169,7 @@ class War extends React.Component {
     player.setFirstCard(playerFirstCard);
     player.setSecondCard(null);
     player.setSurrenderStatus(false);
+    player.setShowFirstCard(true);
 
     let dealer = this.state.dealer;
     dealer.setFirstCard(dealerFirstCard);
@@ -131,6 +180,14 @@ class War extends React.Component {
       player: player,
       dealer: dealer
     });
+
+    //show player 1st card then show dealer 1st card after 1 sec for animation effects
+    this.showHideCardAnimation(true, false, true, false, 1000);
+    let gameStatus = this.determineGameStatus();
+    if(gameStatus == "Player" || gameStatus == "Dealer")
+    {
+      this.showHideCardAnimation(false, false, false, false, 2500);
+    }
   }
 
   onClickWar() {
@@ -142,6 +199,7 @@ class War extends React.Component {
 
     let player = this.state.player;
     player.setSecondCard(playerSecondCard);
+    player.setShowSecondCard(true);
 
     let dealer = this.state.dealer;
     dealer.setSecondCard(dealerSecondCard);
@@ -151,6 +209,10 @@ class War extends React.Component {
       player: player,
       dealer: dealer
     });
+
+    this.showHideCardAnimation(true, true, true, true, 1000);
+    this.showHideCardAnimation(false, false, false, false, 2500);
+
   }
 
   onClickSurrender() {
@@ -162,6 +224,9 @@ class War extends React.Component {
     this.setState({
       player: player
     });
+
+    this.showHideCardAnimation(false, false, false, false, 2500);
+
   }
 
   onClickShuffle() {
@@ -183,61 +248,40 @@ class War extends React.Component {
     let dealer = this.state.dealer;
     let dealerFirstCard = dealer.getFirstCard();
     let dealerSecondCard = dealer.getSecondCard();
+    let gameStatus;
 
-    if(this.state.drawnCards == 0)//game has not started
+    if(dealerFirstCard.value > playerFirstCard.value) //dealer wins
     {
-      return <p>Welcome to War</p>
-    }
-    else if(this.state.drawnCards >= this.state.deck.cards.length - 4) //out of cards
-    {
-        return  <p>Out of Cards</p>;
-    }
-    else if(dealerFirstCard.value > playerFirstCard.value) //dealer wins
-    {
-      return <p>Dealer Wins</p>
+      gameStatus = "Dealer";
     }
     else if(dealerFirstCard.value < playerFirstCard.value) //player wins
     {
-      return <p>Player Wins</p>
+      gameStatus = "Player";
     }
     else
     {
-        if(player.getSurrenderStatus() == true)
+        if(player.getSurrenderStatus() == true) //player surrender
         {
-          return (
-            <div>
-              <p>Player loses due to Surrender</p>
-            </div>
-          )
+          gameStatus = "Dealer";
         }
         else if(playerSecondCard == null) //tied
         {
-            return (
-              <div>
-                <p>Tied</p>
-              </div>
-            )
+            gameStatus = "Tied";
         }
         else
         {
             if(playerSecondCard.value >= dealerSecondCard.value) //player wins War
             {
-              return (
-                <div>
-                  <p>Player wins War</p>
-                </div>
-              )
+              gameStatus = "Player";
             }
             else  //Dealer wins War
             {
-              return (
-                <div>
-                  <p>Dealer wins War</p>
-                </div>
-              )
+              gameStatus = "Dealer";
             }
-          }
+        }
       }
+
+      return gameStatus;
   }
 
   renderCards() {
@@ -263,16 +307,16 @@ class War extends React.Component {
 
     return (
       <div>
-        <div className="dealer1stCard">
+        <div className="dealer1stCard" style={(dealer.getShowFirstCard()) ? styles.show : styles.hide}>
           <img className="cards" src={require('./cards/'+ dealerFirstCard.imageName)} />
         </div>
-        <div className="dealer2ndCard">
+        <div className="dealer2ndCard" style={(dealer.getShowSecondCard()) ? styles.show : styles.hide}>
           {dealer2ndCard}
         </div>
-        <div className="player1stCard">
+        <div className="player1stCard" style={(player.getShowFirstCard()) ? styles.show : styles.hide}>
           <img className="cards" src={require('./cards/'+ playerFirstCard.imageName)} />
         </div>
-        <div className="player2ndCard">
+        <div className="player2ndCard" style={(player.getShowSecondCard()) ? styles.show : styles.hide}>
           {player2ndCard}
         </div>
       </div>
@@ -328,9 +372,6 @@ class War extends React.Component {
         <img className="center" src={require('./cards/table.png')} />
         {this.renderButtonLayout()}
         {this.renderCards()}
-        <div className="statusDiv">
-          {this.determineGameStatus()}
-        </div>
       </div>
     );
   }
