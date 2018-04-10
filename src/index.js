@@ -2,15 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const styles = {
-  hide: {
-    display: 'none'
-  },
-  show: {
-    display: 'block'
-  }
-}
-
 const time = {
   one: 1000,
   twohalf: 2500
@@ -312,38 +303,39 @@ class War extends React.Component {
   }
 
   renderCards() {
-    if(this.state.drawnCards == 0) {
+    if(this.state.drawnCards == 0)
+    {
         return (
           null
         )
     }
 
     let player = this.state.player;
-    let playerFirstCard = player.getFirstCard();
-    let playerSecondCard = player.getSecondCard();
-
     let dealer = this.state.dealer;
-    let dealerFirstCard = dealer.getFirstCard();
-    let dealerSecondCard = dealer.getSecondCard();
+
+    let player1stCard = (player.getShowFirstCard()) ?
+      <img className="cards" src={require('./cards/'+ player.getFirstCard().imageName)} /> : null;
+    let dealer1stCard = (dealer.getShowFirstCard()) ?
+      <img className="cards" src={require('./cards/'+ dealer.getFirstCard().imageName)} /> : null;
 
     //populate 2nd Card when user decides to go to War
-    let player2ndCard = (playerSecondCard == null) ?
-      null : <img className="cards" src={require('./cards/'+ playerSecondCard.imageName)} />;
-    let dealer2ndCard = (dealerSecondCard == null) ?
-      null : <img className="cards" src={require('./cards/'+ dealerSecondCard.imageName)} />;
+    let player2ndCard = (player.getShowSecondCard()) ?
+      <img className="cards" src={require('./cards/'+ player.getSecondCard().imageName)} /> : null;
+    let dealer2ndCard = (dealer.getShowSecondCard()) ?
+      <img className="cards" src={require('./cards/'+ dealer.getSecondCard().imageName)} /> : null;
 
     return (
       <div>
-        <div className="dealer1stCard" style={(dealer.getShowFirstCard()) ? styles.show : styles.hide}>
-          <img className="cards" src={require('./cards/'+ dealerFirstCard.imageName)} />
+        <div className="dealer1stCardHolder">
+          {dealer1stCard}
         </div>
-        <div className="dealer2ndCard" style={(dealer.getShowSecondCard()) ? styles.show : styles.hide}>
+        <div className="dealer2ndCardHolder">
           {dealer2ndCard}
         </div>
-        <div className="player1stCard" style={(player.getShowFirstCard()) ? styles.show : styles.hide}>
-          <img className="cards" src={require('./cards/'+ playerFirstCard.imageName)} />
+        <div className="player1stCardHolder">
+          {player1stCard}
         </div>
-        <div className="player2ndCard" style={(player.getShowSecondCard()) ? styles.show : styles.hide}>
+        <div className="player2ndCardHolder">
           {player2ndCard}
         </div>
       </div>
@@ -361,29 +353,23 @@ class War extends React.Component {
     let dealerFirstCard = dealer.getFirstCard();
     let dealerSecondCard = dealer.getSecondCard();
 
-    if(playerFirstCard == null) //initial load
+    if(this.state.showButtons)
     {
-      buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
-                          <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
-                        </div>;
+        //tied and player needs to select war or surrender
+        if(playerFirstCard!= null && playerFirstCard.value == dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() == false) //War
+        {
+            buttonContainer = <div className="bottomright">
+                                <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
+                                <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
+                              </div>;
+        }
+        else
+        {
+            buttonContainer = <div className="bottomright">
+                                <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
+                              </div>;
+        }
     }
-    else
-    {
-      if(playerFirstCard.value == dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() == false) //War
-      {
-        buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
-                            <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
-                            <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
-                          </div>;
-      }
-      else //After War or Deal next hand
-      {
-        buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
-                            <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
-                          </div>;
-      }
-    }
-
 
     return (
         <div>
