@@ -390,4 +390,5 @@ class War extends React.Component {
   }
 }
 
+
 ReactDOM.render(<War deckNum={6} />, document.getElementById("root"));
