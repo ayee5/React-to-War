@@ -11,6 +11,11 @@ const styles = {
   }
 }
 
+const time = {
+  one: 1000,
+  twohalf: 2500
+}
+
 function CreateButton(props) {
   return (
     <button className={props.className} onClick={props.onClick}>
@@ -136,6 +141,7 @@ class War extends React.Component {
       deck: new Deck(props.deckNum),
       player: new Player(),
       dealer: new Player(),
+      showButtons: true
     };
   }
 
@@ -154,6 +160,15 @@ class War extends React.Component {
       this.setState({
         dealer: dealer,
         player: player
+      });
+    }, time);
+  }
+
+  showButtonAfterDealing(time)
+  {
+    setTimeout(() => {
+      this.setState({
+        showButtons: true
       });
     }, time);
   }
@@ -178,15 +193,18 @@ class War extends React.Component {
     this.setState({
       drawnCards:this.state.drawnCards + 2,
       player: player,
-      dealer: dealer
+      dealer: dealer,
+      showButtons: false
     });
 
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(time.twohalf);
     //show player 1st card then show dealer 1st card after 1 sec for animation effects
-    this.showHideCardAnimation(true, false, true, false, 1000);
+    this.showHideCardAnimation(true, false, true, false, time.one);
     let gameStatus = this.determineGameStatus();
     if(gameStatus == "Player" || gameStatus == "Dealer")
     {
-      this.showHideCardAnimation(false, false, false, false, 2500);
+      this.showHideCardAnimation(false, false, false, false, time.twohalf);
     }
   }
 
@@ -207,11 +225,15 @@ class War extends React.Component {
     this.setState({
       drawnCards:this.state.drawnCards + 2,
       player: player,
-      dealer: dealer
+      dealer: dealer,
+      showButtons: false
     });
 
-    this.showHideCardAnimation(true, true, true, true, 1000);
-    this.showHideCardAnimation(false, false, false, false, 2500);
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(time.twohalf);
+    //show all cards then hide
+    this.showHideCardAnimation(true, true, true, true, time.one);
+    this.showHideCardAnimation(false, false, false, false, time.twohalf);
 
   }
 
@@ -222,10 +244,14 @@ class War extends React.Component {
     player.setSurrenderStatus(true);
 
     this.setState({
-      player: player
+      player: player,
+      showButtons: false
     });
 
-    this.showHideCardAnimation(false, false, false, false, 2500);
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(time.twohalf);
+    //hide all card since player surrender
+    this.showHideCardAnimation(false, false, false, false, time.twohalf);
 
   }
 
@@ -236,6 +262,7 @@ class War extends React.Component {
       deck: new Deck(deckNum),
       player: new Player(),
       dealer: new Player(),
+      showButtons: true
     });
   }
 
@@ -336,7 +363,7 @@ class War extends React.Component {
 
     if(playerFirstCard == null) //initial load
     {
-      buttonContainer = <div className="bottomright">
+      buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
                           <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
                         </div>;
     }
@@ -344,14 +371,14 @@ class War extends React.Component {
     {
       if(playerFirstCard.value == dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() == false) //War
       {
-        buttonContainer = <div className="bottomright">
+        buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
                             <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
                             <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
                           </div>;
       }
       else //After War or Deal next hand
       {
-        buttonContainer = <div className="bottomright">
+        buttonContainer = <div className="bottomright" style={(this.state.showButtons) ? styles.show : styles.hide}>
                             <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
                           </div>;
       }
@@ -377,4 +404,4 @@ class War extends React.Component {
   }
 }
 
-ReactDOM.render(<War deckNum={4} />, document.getElementById("root"));
+ReactDOM.render(<War deckNum={6} />, document.getElementById("root"));
