@@ -114,3 +114,35 @@ body
     position: fixed;
     z-index: 3;
 }
+
+/* start top around 25% decrease by 1 with each additional chip*/
+.tieSlot
+{
+  position: absolute;
+  width: 4%;
+  height: 4%;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2
+}
+
+/* start top around 45% decrease by 1 with each additional chip*/
+.anteSlot
+{
+  position: absolute;
+  width: 4%;
+  height: 4%;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2
+}
+
+.chip
+{
+  max-width:100%;
+  max-height:100%;
+}

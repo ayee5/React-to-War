@@ -124,6 +124,47 @@ class Deck {
   }
 }
 
+//used to display chip stack in the betting slot (tie or ante)
+class ChipStack extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      chipcount: props.chipcount,
+      denomination: [100, 25, 10, 5]
+    };
+  }
+
+  buildChipStack()
+  {
+    let chipRemainder = this.props.chipcount;
+    let chipStackHtml = [];
+    let denomination = this.state.denomination;
+    let top = this.props.top;
+
+    for(let i = 0; i<denomination.length; i++)
+    {
+        let currChipCount = Math.floor(chipRemainder / denomination[i]);
+        for(let t=0; t<currChipCount; t++)
+        {
+            let currChipImg = <div className={this.props.baselocation} style={{top: top+'%'}}>
+                              <img className="chip" src={require("./chips/" + denomination[i] + "flat.png")} />
+                           </div>;
+            chipStackHtml.push(currChipImg);
+            top = top - 1;
+        }
+        chipRemainder = chipRemainder % denomination[i];
+        if(chipRemainder == 0) break;
+    }
+    return chipStackHtml;
+  }
+
+  render() {
+    return (
+      this.buildChipStack()
+    );
+  }
+}
+
 class War extends React.Component {
   constructor(props) {
     super(props);
@@ -385,6 +426,8 @@ class War extends React.Component {
         <img className="center" src={require('./cards/table.png')} />
         {this.renderButtonLayout()}
         {this.renderCards()}
+        <ChipStack chipcount={80} baselocation={"tieSlot"} top={23} />
+        <ChipStack chipcount={1000} baselocation={"anteSlot"} top={45} />
       </div>
     );
   }
