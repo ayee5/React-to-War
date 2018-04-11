@@ -32,6 +32,8 @@ class Player
     this.showFirstCard = false;
     this.showSecondCard = false;
     this.surrenderStatus = false
+    this.anteBet = 0;
+    this.tieBet = 0;
   }
 
   setFirstCard(card)
@@ -59,6 +61,16 @@ class Player
     this.showSecondCard = status;
   }
 
+  setAnteBet(bet)
+  {
+    this.anteBet = bet;
+  }
+
+  setTieBet(bet)
+  {
+    this.tieBet = bet;
+  }
+
   getFirstCard()
   {
     return this.firstCard;
@@ -82,6 +94,16 @@ class Player
   getShowSecondCard()
   {
     return this.showSecondCard;
+  }
+
+  getAnteBet(bet)
+  {
+    return this.anteBet;
+  }
+
+  getTieBet(bet)
+  {
+    return this.tieBet
   }
 }
 
@@ -124,6 +146,38 @@ class Deck {
   }
 }
 
+class BettingChipButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      val: props.val,
+      hover: false
+    };
+  }
+
+  toggleHover() {
+    this.setState({
+      hover: !this.state.hover
+    });
+  }
+
+  render() {
+    let linkStyle;
+    if (this.state.hover) {
+      linkStyle = {border: '3px solid yellow'}
+    } else {
+      linkStyle = {border: 'none'}
+    }
+
+    return (
+        <img className="topChip" style={linkStyle} src={this.props.src}
+          onMouseEnter={() => this.toggleHover()}
+          onMouseLeave={() => this.toggleHover()}
+          onClick={this.props.onClick} />
+    );
+  }
+}
+
 //used to display chip stack in the betting slot (tie or ante)
 class ChipStack extends React.Component {
   constructor(props) {
@@ -147,10 +201,10 @@ class ChipStack extends React.Component {
         for(let t=0; t<currChipCount; t++)
         {
             let currChipImg = <div className={this.props.baselocation} style={{top: top+'%'}}>
-                              <img className="chip" src={require("./chips/" + denomination[i] + "flat.png")} />
+                              <img className="flatChip" src={require("./chips/" + denomination[i] + "flat.png")} />
                            </div>;
             chipStackHtml.push(currChipImg);
-            top = top - 1;
+            top = top - 1.5;
         }
         chipRemainder = chipRemainder % denomination[i];
         if(chipRemainder == 0) break;
@@ -298,6 +352,18 @@ class War extends React.Component {
     });
   }
 
+  onClickBet(bet) {
+    let player = this.state.player;
+    let currTieBet = player.getTieBet();
+    let currAnteBet = player.getAnteBet();
+    player.setTieBet(currTieBet + bet);
+    player.setAnteBet(currAnteBet+ bet);
+
+    this.setState({
+      player: player
+    });
+  }
+
   determineGameStatus()
   {
     let player = this.state.player;
@@ -383,7 +449,19 @@ class War extends React.Component {
     )
   }
 
-  renderButtonLayout()
+  renderBettingChipButton()
+  {
+    return (
+        <div className="bettingChipHolder">
+            <BettingChipButton src={require('./chips/5top.png')} onClick={() => this.onClickBet(5)}/>
+            <BettingChipButton src={require('./chips/10top.png')} onClick={() => this.onClickBet(10)}/>
+            <BettingChipButton src={require('./chips/25top.png')} onClick={() => this.onClickBet(25)}/>
+            <BettingChipButton src={require('./chips/100top.png')} onClick={() => this.onClickBet(100)}/>
+        </div>
+    )
+  }
+
+  renderFunctionalButton()
   {
     let buttonContainer;
     let player = this.state.player;
@@ -411,13 +489,29 @@ class War extends React.Component {
                               </div>;
         }
     }
+    return buttonContainer;
+  }
 
+  renderButtonLayout()
+  {
     return (
         <div>
-          {buttonContainer}
+          {this.renderFunctionalButton()}
           <CreateButton className="bottomleft" onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
+          {this.renderBettingChipButton()}
         </div>
     )
+  }
+
+  renderPlayerBet()
+  {
+      let player = this.state.player;
+      return (
+          <div>
+            <ChipStack chipcount={player.getTieBet()} baselocation={"chipstack"} top={23} />
+            <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={45} />
+          </div>
+      )
   }
 
   render() {
@@ -426,8 +520,7 @@ class War extends React.Component {
         <img className="center" src={require('./cards/table.png')} />
         {this.renderButtonLayout()}
         {this.renderCards()}
-        <ChipStack chipcount={80} baselocation={"tieSlot"} top={23} />
-        <ChipStack chipcount={1000} baselocation={"anteSlot"} top={45} />
+        {this.renderPlayerBet()}
       </div>
     );
   }

@@ -115,8 +115,9 @@ body
     z-index: 3;
 }
 
-/* start top around 25% decrease by 1 with each additional chip*/
-.tieSlot
+/* start ante top around 45% decrease by 1 with each additional chip*/
+/* start tied top around 25% decrease by 1 with each additional chip*/
+.chipstack
 {
   position: absolute;
   width: 4%;
@@ -128,21 +129,30 @@ body
   z-index: 2
 }
 
-/* start top around 45% decrease by 1 with each additional chip*/
-.anteSlot
-{
-  position: absolute;
-  width: 4%;
-  height: 4%;
-  margin: auto;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2
-}
-
-.chip
+.flatChip
 {
   max-width:100%;
   max-height:100%;
+  border:1px solid #787878;
+  border-radius:50%;
+}
+
+.bettingChipHolder
+{
+  position: absolute;
+  width: 10%;
+  height: 12%;
+  margin: auto;
+  top: 0%;
+  left: 0%;
+  right: 100%;
+  bottom: 0;
+  z-index: 2
+}
+
+.topChip
+{
+  max-width:100%;
+  max-height:100%;
+  border-radius:50%;
 }
