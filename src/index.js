@@ -31,9 +31,10 @@ class Player
     this.secondCard = null;
     this.showFirstCard = false;
     this.showSecondCard = false;
-    this.surrenderStatus = false
+    this.surrenderStatus = false;
     this.anteBet = 0;
     this.tieBet = 0;
+    this.balance = 500;
   }
 
   setFirstCard(card)
@@ -71,6 +72,11 @@ class Player
     this.tieBet = bet;
   }
 
+  setBalance(balance)
+  {
+    this.balance = balance;
+  }
+
   getFirstCard()
   {
     return this.firstCard;
@@ -104,6 +110,11 @@ class Player
   getTieBet(bet)
   {
     return this.tieBet
+  }
+
+  getBalance()
+  {
+    return this.balance;
   }
 }
 
@@ -173,10 +184,13 @@ class BettingChipButton extends React.Component {
 
   render() {
     let linkStyle;
-    if (this.state.hover) {
-      linkStyle = {border: '3px solid yellow', 'border-radius': '50%'}
-    } else {
-      linkStyle = {border: 'none'}
+    if (this.state.hover)
+    {
+        linkStyle = {border: '3px solid yellow', 'border-radius': '50%'};
+    }
+    else
+    {
+        linkStyle = {border: 'none'};
     }
 
     return (
@@ -366,6 +380,26 @@ class War extends React.Component {
 
   }
 
+  onClickClearBet() {
+    let player = this.state.player;
+    let selectedBet;
+    if(this.state.selectAnteSlot)
+    {
+        selectedBet = player.getAnteBet();
+        player.setAnteBet(0);
+    }
+    else
+    {
+        selectedBet = player.getTieBet();
+        player.setTieBet(0);
+    }
+
+    player.setBalance(player.getBalance() + selectedBet);
+    this.setState({
+      player: player
+    });
+  }
+
   onClickShuffle() {
     let deckNum = this.state.deck.deckNum;
     this.setState({
@@ -379,6 +413,10 @@ class War extends React.Component {
 
   onClickBet(bet) {
     let player = this.state.player;
+    let playerBalance = player.getBalance();
+
+    if(bet > playerBalance) return;
+
     if(this.state.selectAnteSlot)
     {
         let currAnteBet = player.getAnteBet();
@@ -390,6 +428,7 @@ class War extends React.Component {
         player.setTieBet(currTieBet + bet);
     }
 
+    player.setBalance(playerBalance - bet);
     this.setState({
       player: player
     });
@@ -514,7 +553,8 @@ class War extends React.Component {
         else
         {
             buttonContainer = <div className="bottomright">
-                                <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Draw Card"}/>
+                                <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
+                                <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
                               </div>;
         }
     }
@@ -561,6 +601,16 @@ class War extends React.Component {
       )
   }
 
+  renderPlayerBalance()
+  {
+      let player = this.state.player;
+      return (
+        <div className="chipstack">
+          <p>Player's Balance {player.getBalance()}</p>
+        </div>
+      )
+  }
+
   render() {
     return (
       <div className="main">
@@ -569,6 +619,7 @@ class War extends React.Component {
         {this.renderCards()}
         {this.renderPlayerBet()}
         {this.renderBettingSlots()}
+        {this.renderPlayerBalance()}
       </div>
     );
   }
