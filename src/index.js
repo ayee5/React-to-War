@@ -146,6 +146,16 @@ class Deck {
   }
 }
 
+class CardComponent extends React.Component {
+  render() {
+    return (
+        <div className="cardHolder" style={this.props.location}>
+            <img className="maxImg" src={this.props.src} />
+        </div>
+    )
+  }
+}
+
 class BettingChipButton extends React.Component {
   constructor(props) {
     super(props);
@@ -443,35 +453,28 @@ class War extends React.Component {
           null
         )
     }
-
     let player = this.state.player;
     let dealer = this.state.dealer;
 
-    let player1stCard = (player.getShowFirstCard()) ?
-      <img className="maxImg" src={require('./cards/'+ player.getFirstCard().imageName)} /> : null;
     let dealer1stCard = (dealer.getShowFirstCard()) ?
-      <img className="maxImg" src={require('./cards/'+ dealer.getFirstCard().imageName)} /> : null;
+      <CardComponent src={require('./cards/'+ dealer.getFirstCard().imageName)} location={{top: '0', left: '8%', right: '0', bottom: '60%'}} /> : null;
+    let dealer2ndCard = (dealer.getShowSecondCard()) ?
+      <CardComponent src={require('./cards/'+ dealer.getSecondCard().imageName)} location={{top: '0', left: '13%', right: '0', bottom: '55%'}} /> : null;
 
     //populate 2nd Card when user decides to go to War
+    let player1stCard = (player.getShowFirstCard()) ?
+      <CardComponent src={require('./cards/'+ player.getFirstCard().imageName)} location={{top: '35%', left: '25%', right: '0', bottom: '0'}} /> : null;
     let player2ndCard = (player.getShowSecondCard()) ?
-      <img className="maxImg" src={require('./cards/'+ player.getSecondCard().imageName)} /> : null;
-    let dealer2ndCard = (dealer.getShowSecondCard()) ?
-      <img className="maxImg" src={require('./cards/'+ dealer.getSecondCard().imageName)} /> : null;
+      <CardComponent src={require('./cards/'+ player.getSecondCard().imageName)} location={{top: '40%', left: '30%', right: '0', bottom: '0'}} /> : null;
+
 
     return (
       <div>
-        <div className="cardHolder" style={{top: '0', left: '8%', right: '0', bottom: '60%'}}>
           {dealer1stCard}
-        </div>
-        <div className="cardHolder" style={{top: '0', left: '13%', right: '0', bottom: '55%'}}>
           {dealer2ndCard}
-        </div>
-        <div className="cardHolder" style={{top: '35%', left: '25%', right: '0', bottom: '0'}}>
           {player1stCard}
-        </div>
-        <div className="cardHolder" style={{top: '40%', left: '30%', right: '0', bottom: '0'}}>
           {player2ndCard}
-        </div>
+
       </div>
     )
   }
