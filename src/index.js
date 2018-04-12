@@ -164,13 +164,13 @@ class BettingChipButton extends React.Component {
   render() {
     let linkStyle;
     if (this.state.hover) {
-      linkStyle = {border: '3px solid yellow'}
+      linkStyle = {border: '3px solid yellow', 'border-radius': '50%'}
     } else {
       linkStyle = {border: 'none'}
     }
 
     return (
-        <img className="topChip" style={linkStyle} src={this.props.src}
+        <img className="maxImg" style={linkStyle} src={this.props.src}
           onMouseEnter={() => this.toggleHover()}
           onMouseLeave={() => this.toggleHover()}
           onClick={this.props.onClick} />
@@ -201,13 +201,13 @@ class ChipStack extends React.Component {
         for(let t=0; t<currChipCount; t++)
         {
             let currChipImg = <div className={this.props.baselocation} style={{top: top+'%'}}>
-                              <img className="flatChip" src={require("./chips/" + denomination[i] + "flat.png")} />
+                              <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("./chips/" + denomination[i] + "flat.png")} />
                            </div>;
             chipStackHtml.push(currChipImg);
             top = top - 1.5;
         }
         chipRemainder = chipRemainder % denomination[i];
-        if(chipRemainder == 0) break;
+        if(chipRemainder === 0) break;
     }
     return chipStackHtml;
   }
@@ -219,6 +219,20 @@ class ChipStack extends React.Component {
   }
 }
 
+class BettingSlot extends React.Component {
+  render() {
+    let highlightClass = (this.props.highlight) ? "bettingSlotHighlight" : "";
+
+    return (
+      <div className="bettingSlotHolder" style={this.props.top}>
+        <img className={["maxImg", highlightClass].join(" ")}
+             src={this.props.src}
+             onClick={this.props.onClick} />
+      </div>
+    )
+  }
+}
+
 class War extends React.Component {
   constructor(props) {
     super(props);
@@ -227,7 +241,8 @@ class War extends React.Component {
       deck: new Deck(props.deckNum),
       player: new Player(),
       dealer: new Player(),
-      showButtons: true
+      showButtons: true,
+      selectAnteSlot: true
     };
   }
 
@@ -288,7 +303,7 @@ class War extends React.Component {
     //show player 1st card then show dealer 1st card after 1 sec for animation effects
     this.showHideCardAnimation(true, false, true, false, time.one);
     let gameStatus = this.determineGameStatus();
-    if(gameStatus == "Player" || gameStatus == "Dealer")
+    if(gameStatus === "Player" || gameStatus === "Dealer")
     {
       this.showHideCardAnimation(false, false, false, false, time.twohalf);
     }
@@ -354,13 +369,25 @@ class War extends React.Component {
 
   onClickBet(bet) {
     let player = this.state.player;
-    let currTieBet = player.getTieBet();
-    let currAnteBet = player.getAnteBet();
-    player.setTieBet(currTieBet + bet);
-    player.setAnteBet(currAnteBet+ bet);
+    if(this.state.selectAnteSlot)
+    {
+        let currAnteBet = player.getAnteBet();
+        player.setAnteBet(currAnteBet + bet);
+    }
+    else
+    {
+        let currTieBet = player.getTieBet();
+        player.setTieBet(currTieBet + bet);
+    }
 
     this.setState({
       player: player
+    });
+  }
+
+  onSelectBettingSlot() {
+    this.setState({
+      selectAnteSlot: !this.state.selectAnteSlot
     });
   }
 
@@ -385,11 +412,11 @@ class War extends React.Component {
     }
     else
     {
-        if(player.getSurrenderStatus() == true) //player surrender
+        if(player.getSurrenderStatus() === true) //player surrender
         {
           gameStatus = "Dealer";
         }
-        else if(playerSecondCard == null) //tied
+        else if(playerSecondCard === null) //tied
         {
             gameStatus = "Tied";
         }
@@ -410,7 +437,7 @@ class War extends React.Component {
   }
 
   renderCards() {
-    if(this.state.drawnCards == 0)
+    if(this.state.drawnCards === 0)
     {
         return (
           null
@@ -421,28 +448,28 @@ class War extends React.Component {
     let dealer = this.state.dealer;
 
     let player1stCard = (player.getShowFirstCard()) ?
-      <img className="cards" src={require('./cards/'+ player.getFirstCard().imageName)} /> : null;
+      <img className="maxImg" src={require('./cards/'+ player.getFirstCard().imageName)} /> : null;
     let dealer1stCard = (dealer.getShowFirstCard()) ?
-      <img className="cards" src={require('./cards/'+ dealer.getFirstCard().imageName)} /> : null;
+      <img className="maxImg" src={require('./cards/'+ dealer.getFirstCard().imageName)} /> : null;
 
     //populate 2nd Card when user decides to go to War
     let player2ndCard = (player.getShowSecondCard()) ?
-      <img className="cards" src={require('./cards/'+ player.getSecondCard().imageName)} /> : null;
+      <img className="maxImg" src={require('./cards/'+ player.getSecondCard().imageName)} /> : null;
     let dealer2ndCard = (dealer.getShowSecondCard()) ?
-      <img className="cards" src={require('./cards/'+ dealer.getSecondCard().imageName)} /> : null;
+      <img className="maxImg" src={require('./cards/'+ dealer.getSecondCard().imageName)} /> : null;
 
     return (
       <div>
-        <div className="dealer1stCardHolder">
+        <div className="cardHolder" style={{top: '0', left: '8%', right: '0', bottom: '60%'}}>
           {dealer1stCard}
         </div>
-        <div className="dealer2ndCardHolder">
+        <div className="cardHolder" style={{top: '0', left: '13%', right: '0', bottom: '55%'}}>
           {dealer2ndCard}
         </div>
-        <div className="player1stCardHolder">
+        <div className="cardHolder" style={{top: '35%', left: '25%', right: '0', bottom: '0'}}>
           {player1stCard}
         </div>
-        <div className="player2ndCardHolder">
+        <div className="cardHolder" style={{top: '40%', left: '30%', right: '0', bottom: '0'}}>
           {player2ndCard}
         </div>
       </div>
@@ -470,12 +497,11 @@ class War extends React.Component {
 
     let dealer = this.state.dealer;
     let dealerFirstCard = dealer.getFirstCard();
-    let dealerSecondCard = dealer.getSecondCard();
 
     if(this.state.showButtons)
     {
         //tied and player needs to select war or surrender
-        if(playerFirstCard!= null && playerFirstCard.value == dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() == false) //War
+        if(playerFirstCard!= null && playerFirstCard.value === dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() === false) //War
         {
             buttonContainer = <div className="bottomright">
                                 <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
@@ -509,22 +535,40 @@ class War extends React.Component {
       return (
           <div>
             <ChipStack chipcount={player.getTieBet()} baselocation={"chipstack"} top={23} />
-            <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={45} />
+            <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={55} />
           </div>
+      )
+  }
+
+  renderBettingSlots()
+  {
+      return (
+        <div>
+            <BettingSlot
+              highlight={!this.state.selectAnteSlot}
+              top={{top: '23%'}}
+              src={require("./table/Tie.png")}
+              onClick={() => this.onSelectBettingSlot()} />
+            <BettingSlot
+              highlight={this.state.selectAnteSlot}
+              top={{top: '55%'}}
+              src={require("./table/Ante.png")}
+              onClick={() => this.onSelectBettingSlot()} />
+        </div>
       )
   }
 
   render() {
     return (
       <div className="main">
-        <img className="center" src={require('./cards/table.png')} />
+        <img className="table" src={require('./table/table.png')} />
         {this.renderButtonLayout()}
         {this.renderCards()}
         {this.renderPlayerBet()}
+        {this.renderBettingSlots()}
       </div>
     );
   }
 }
-
 
 ReactDOM.render(<War deckNum={6} />, document.getElementById("root"));
