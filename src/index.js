@@ -2,9 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-const time = {
+//use as a timer to pause animation effect
+const pause = {
   one: 1000,
-  twohalf: 2500
+  two: 2000,
+  three: 3000
 }
 
 function CreateButton(props) {
@@ -32,8 +34,12 @@ class Player
     this.showFirstCard = false;
     this.showSecondCard = false;
     this.surrenderStatus = false;
+    this.warBet = 0;
     this.anteBet = 0;
     this.tieBet = 0;
+    this.anteAmountWon = 0;
+    this.tieAmountWon = 0;
+    this.previousTieBet = 0;
     this.balance = 500;
   }
 
@@ -72,9 +78,43 @@ class Player
     this.tieBet = bet;
   }
 
-  setBalance(balance)
+  setBalance(bet)
   {
-    this.balance = balance;
+    this.balance = bet;
+  }
+
+  setAnteAmountWon(amount)
+  {
+    this.anteAmountWon = amount;
+  }
+
+  setTieAmountWon(amount)
+  {
+    this.tieAmountWon = amount;
+  }
+
+  setPreviousTieBet(bet)
+  {
+    this.previousTieBet = bet;
+  }
+
+  setWarBet(status)
+  {
+    this.warBet = status;
+  }
+
+  addBetBalance(ante, tie)
+  {
+    if(ante === true)
+    {
+        let anteBet = this.getAnteBet();
+        this.setBalance(this.getBalance() + anteBet);
+    }
+    if(tie === true)
+    {
+        let tieBet = this.getTieBet();
+        this.setBalance(this.getBalance() + (tieBet * 10));
+    }
   }
 
   getFirstCard()
@@ -115,6 +155,26 @@ class Player
   getBalance()
   {
     return this.balance;
+  }
+
+  getAnteAmountWon()
+  {
+    return this.anteAmountWon;
+  }
+
+  getTieAmountWon()
+  {
+    return this.tieAmountWon;
+  }
+
+  getPreviousTieBet()
+  {
+    return this.previousTieBet;
+  }
+
+  getWarBet()
+  {
+    return this.warBet;
   }
 }
 
@@ -224,7 +284,8 @@ class ChipStack extends React.Component {
         let currChipCount = Math.floor(chipRemainder / denomination[i]);
         for(let t=0; t<currChipCount; t++)
         {
-            let currChipImg = <div className={this.props.baselocation} style={{top: top+'%'}}>
+            let style = Object.assign({top: top+"%"}, this.props.style);
+            let currChipImg = <div className={this.props.baselocation} style={style}>
                               <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("./chips/" + denomination[i] + "flat.png")} />
                            </div>;
             chipStackHtml.push(currChipImg);
@@ -270,6 +331,15 @@ class War extends React.Component {
     };
   }
 
+  payBet(ante, tie)
+  {
+    let player = this.state.player;
+    player.addBetBalance(ante, tie);
+    this.setState({
+      player: player,
+    });
+  }
+
   //Add card dealing effect by using timer to show hide cards
   showHideCardAnimation(dealer1st, dealer2nd, player1st, player2nd, time)
   {
@@ -289,6 +359,117 @@ class War extends React.Component {
     }, time);
   }
 
+  placeWarBet()
+  {
+    let player = this.state.player;
+    player.setWarBet(player.getAnteBet());
+    player.setBalance(player.getBalance() - player.getWarBet());
+    this.setState({
+        player: player,
+    });
+  }
+
+  showBetPaid(ante, tie)
+  {
+    let player = this.state.player;
+    setTimeout(() => {
+      if(ante === true)
+      {
+          player.setAnteAmountWon(player.getAnteBet());
+      }
+
+      if(tie === true)
+      {
+          player.setTieAmountWon(player.getTieBet() * 10);
+      }
+
+      this.setState({
+        player: player,
+      });
+
+    }, pause.one);
+  }
+
+  addBetBackToBalance(ante, tie)
+  {
+    let player = this.state.player;
+    setTimeout(() => {
+      if(ante === true)
+      {
+          player.setBalance(player.getBalance() + player.getAnteBet() + player.getWarBet());
+          this.payBet(true, false);
+          player.setAnteAmountWon(0);
+          player.setAnteBet(0);
+          player.setWarBet(0);
+      }
+      else
+      {
+          if(tie === false)//when tie is false, player is not at war. Ante/War bet can be removed.
+          {
+              player.setAnteBet(0);
+              player.setWarBet(0);
+          }
+      }
+
+      if(tie === true)
+      {
+          player.setBalance(player.getBalance() + player.getTieBet());
+          this.payBet(false, true);
+          player.setTieAmountWon(0);
+          player.setTieBet(0);
+      }
+      else
+      {
+          player.setTieBet(0);
+      }
+
+      this.setState({
+        player: player,
+      });
+
+    }, pause.two);
+  }
+
+  repopulateInitialBet(initialAnteBet, initialTieBet)
+  {
+    let player = this.state.player;
+    setTimeout(() => {
+      if(initialAnteBet > 0 && player.getBalance() > initialAnteBet)
+      {
+          player.setAnteBet(initialAnteBet);
+          player.setBalance(player.getBalance() - initialAnteBet);
+      }
+
+      if(initialTieBet > 0 && player.getBalance() > initialTieBet)
+      {
+          player.setTieBet(initialTieBet);
+          player.setBalance(player.getBalance() - initialTieBet);
+      }
+
+      this.setState({
+        player: player,
+      });
+
+    }, pause.three);
+  }
+
+  showChipStackAnimation(wonAnte, wonTie, war)
+  {
+    let player = this.state.player;
+
+    if(war === true)
+    {
+        this.placeWarBet();
+    }
+
+    this.showBetPaid(wonAnte, wonTie);
+    this.addBetBackToBalance(wonAnte, wonTie);
+    if(wonTie === false) //dealer and player are tied on first card. No need to repopulate bets yet
+    {
+        this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet());
+    }
+  }
+
   showButtonAfterDealing(time)
   {
     setTimeout(() => {
@@ -299,13 +480,26 @@ class War extends React.Component {
   }
 
   onClickDrawInitialCard() {
-    if(this.state.drawnCards >= this.state.deck.cards.length - 4) return;
+    if(this.state.drawnCards >= this.state.deck.cards.length - 4)
+    {
+      alert("Deck is out of cards");
+      return;
+    }
+
+    let player = this.state.player;
+    if(player.getAnteBet() == 0 && player.getTieBet() == 0)
+    {
+      alert("Place your bet");
+      return;
+    }
+
+    //set previous tie amount betted in case tie bet gets paid out and we still need to repopulate later
+    player.setPreviousTieBet(player.getTieBet());
 
     let currDeck = this.state.deck;
     let dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
     let playerFirstCard = currDeck.drawCard(this.state.drawnCards+1);
 
-    let player = this.state.player;
     player.setFirstCard(playerFirstCard);
     player.setSecondCard(null);
     player.setSurrenderStatus(false);
@@ -323,24 +517,41 @@ class War extends React.Component {
     });
 
     //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(time.twohalf);
+    this.showButtonAfterDealing(pause.three);
     //show player 1st card then show dealer 1st card after 1 sec for animation effects
-    this.showHideCardAnimation(true, false, true, false, time.one);
+    this.showHideCardAnimation(true, false, true, false, pause.one);
     let gameStatus = this.determineGameStatus();
-    if(gameStatus === "Player" || gameStatus === "Dealer")
+    if(gameStatus === "Player")
     {
-      this.showHideCardAnimation(false, false, false, false, time.twohalf);
+      this.showHideCardAnimation(false, false, false, false, pause.two);
+      this.showChipStackAnimation(true, false, false);
+
+    }
+    else if(gameStatus === "Dealer")
+    {
+      this.showHideCardAnimation(false, false, false, false, pause.two);
+      this.showChipStackAnimation(false, false, false);
+    }
+    else if(gameStatus === "Tied")
+    {
+      this.showChipStackAnimation(false, true, false);
     }
   }
 
   onClickWar() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
+    let player = this.state.player;
+    if(player.getAnteBet() > player.getBalance())
+    {
+        alert("You have insufficient funds for War");
+        return;
+    }
+
     let currDeck = this.state.deck;
     let dealerSecondCard = currDeck.drawCard(this.state.drawnCards);
     let playerSecondCard = currDeck.drawCard(this.state.drawnCards+1);
 
-    let player = this.state.player;
     player.setSecondCard(playerSecondCard);
     player.setShowSecondCard(true);
 
@@ -355,10 +566,20 @@ class War extends React.Component {
     });
 
     //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(time.twohalf);
+    this.showButtonAfterDealing(pause.two);
     //show all cards then hide
-    this.showHideCardAnimation(true, true, true, true, time.one);
-    this.showHideCardAnimation(false, false, false, false, time.twohalf);
+    this.showHideCardAnimation(true, true, true, true, pause.one);
+    this.showHideCardAnimation(false, false, false, false, pause.two);
+
+    let gameStatus = this.determineGameStatus();
+    if(gameStatus === "Player")
+    {
+      this.showChipStackAnimation(true, false, true);
+    }
+    else if(gameStatus === "Dealer")
+    {
+      this.showChipStackAnimation(false, false, true);
+    }
 
   }
 
@@ -374,10 +595,13 @@ class War extends React.Component {
     });
 
     //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(time.twohalf);
-    //hide all card since player surrender
-    this.showHideCardAnimation(false, false, false, false, time.twohalf);
-
+    this.showButtonAfterDealing(pause.three);
+    //hide all card since player surrender and render chipstack
+    this.showHideCardAnimation(false, false, false, false, pause.two);
+    this.showChipStackAnimation(false, false, false);
+    this.setState({
+      player: player,
+    });
   }
 
   onClickClearBet() {
@@ -415,8 +639,11 @@ class War extends React.Component {
     let player = this.state.player;
     let playerBalance = player.getBalance();
 
-    if(bet > playerBalance) return;
-
+    if(bet > playerBalance)
+    {
+      alert("You have insufficient funds");
+      return;
+    }
     if(this.state.selectAnteSlot)
     {
         let currAnteBet = player.getAnteBet();
@@ -552,10 +779,14 @@ class War extends React.Component {
         }
         else
         {
-            buttonContainer = <div className="bottomright">
-                                <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
-                                <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
-                              </div>;
+            buttonContainer = <div>
+                              {this.renderBettingChipButton()}
+                              <div className="bottomright">
+                                 <CreateButton onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
+                                 <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
+                                 <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
+                               </div>
+                            </div>;
         }
     }
     return buttonContainer;
@@ -566,8 +797,6 @@ class War extends React.Component {
     return (
         <div>
           {this.renderFunctionalButton()}
-          <CreateButton className="bottomleft" onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
-          {this.renderBettingChipButton()}
         </div>
     )
   }
@@ -578,7 +807,10 @@ class War extends React.Component {
       return (
           <div>
             <ChipStack chipcount={player.getTieBet()} baselocation={"chipstack"} top={23} />
+            <ChipStack chipcount={player.getTieAmountWon()} baselocation={"chipstack"} top={23} style={{right: "11%"}} />
             <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={55} />
+            <ChipStack chipcount={player.getWarBet()} baselocation={"chipstack"} top={55} style={{left: "11%"}}/>
+            <ChipStack chipcount={player.getAnteAmountWon()} baselocation={"chipstack"} top={55} style={{right: "11%"}} />
           </div>
       )
   }
