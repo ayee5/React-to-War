@@ -103,6 +103,12 @@ class Player
     this.warBet = status;
   }
 
+  /**
+   * Add bet to player's balance
+   *
+   * @param {boolean} ante - add ante bet to balance
+   * @param {boolean} tie - add tie bet to balance
+   */
   addBetBalance(ante, tie)
   {
     if(ante === true)
