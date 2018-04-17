@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
 import { Button } from 'react-bootstrap';
+import  Deck  from './deck.js';
+import  Player  from './player.js';
 
 // use as a timer to pause animation effect
 const pause = {
@@ -19,220 +21,6 @@ function CreateButton(props) {
       onClick={props.onClick}>{props.value}
     </Button>
   );
-}
-
-class Card {
-  constructor(rank, suit, value) {
-    this.rank = rank;
-    this.suit = suit;
-    this.value = value;
-    this.imageName = rank+suit+'.png';
-  }
-}
-
-class Player
-{
-  constructor() {
-    this.firstCard = null;
-    this.secondCard = null;
-    this.showFirstCard = false;
-    this.showSecondCard = false;
-    this.surrenderStatus = false;
-    this.warBet = 0;
-    this.anteBet = 0;
-    this.tieBet = 0;
-    this.anteAmountWon = 0;
-    this.tieAmountWon = 0;
-    this.previousTieBet = 0;
-    this.balance = 500;
-  }
-
-  setFirstCard(card)
-  {
-    this.firstCard = card;
-  }
-
-  setSecondCard(card)
-  {
-    this.secondCard = card;
-  }
-
-  setSurrenderStatus(status)
-  {
-    this.surrenderStatus = status;
-  }
-
-  setShowFirstCard(status)
-  {
-    this.showFirstCard = status;
-  }
-
-  setShowSecondCard(status)
-  {
-    this.showSecondCard = status;
-  }
-
-  setAnteBet(bet)
-  {
-    this.anteBet = bet;
-  }
-
-  setTieBet(bet)
-  {
-    this.tieBet = bet;
-  }
-
-  setBalance(bet)
-  {
-    this.balance = bet;
-  }
-
-  setAnteAmountWon(amount)
-  {
-    this.anteAmountWon = amount;
-  }
-
-  setTieAmountWon(amount)
-  {
-    this.tieAmountWon = amount;
-  }
-
-  setPreviousTieBet(bet)
-  {
-    this.previousTieBet = bet;
-  }
-
-  setWarBet(status)
-  {
-    this.warBet = status;
-  }
-
-  /**
-   * Add bet to player's balance
-   *
-   * @param {boolean} ante - add ante bet to balance
-   * @param {boolean} tie - add tie bet to balance
-   */
-  addBetBalance(ante, tie)
-  {
-    if(ante === true)
-    {
-      let anteBet = this.getAnteBet();
-      this.setBalance(this.getBalance() + anteBet);
-    }
-    if(tie === true)
-    {
-      let tieBet = this.getTieBet();
-      this.setBalance(this.getBalance() + (tieBet * 10));
-    }
-  }
-
-  getFirstCard()
-  {
-    return this.firstCard;
-  }
-
-  getSecondCard()
-  {
-    return this.secondCard;
-  }
-
-  getSurrenderStatus(status)
-  {
-    return this.surrenderStatus;
-  }
-
-  getShowFirstCard()
-  {
-    return this.showFirstCard;
-  }
-
-  getShowSecondCard()
-  {
-    return this.showSecondCard;
-  }
-
-  getAnteBet(bet)
-  {
-    return this.anteBet;
-  }
-
-  getTieBet(bet)
-  {
-    return this.tieBet
-  }
-
-  getBalance()
-  {
-    return this.balance;
-  }
-
-  getAnteAmountWon()
-  {
-    return this.anteAmountWon;
-  }
-
-  getTieAmountWon()
-  {
-    return this.tieAmountWon;
-  }
-
-  getPreviousTieBet()
-  {
-    return this.previousTieBet;
-  }
-
-  getWarBet()
-  {
-    return this.warBet;
-  }
-}
-
-
-class Deck {
-  constructor(deckNum) {
-    this.deckNum = deckNum;
-    this.cards = this.initializeDeck(deckNum);
-    this.shuffle();
-  }
-
-  /**
-   * Initialize deck of cards
-   *
-   * @param {integer} deckNum
-   */
-  initializeDeck(deckNum) {
-    const suits = ["Spade", "Heart", "Club", "Diamond"];
-    const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
-
-    var deckOfCards = [];
-    for(let d = 0; d < deckNum; d++) {
-      for (let r = 0; r < ranks.length; r++) {
-        for (let s = 0; s < suits.length; s++) {
-          deckOfCards.push(new Card(ranks[r], suits[s], r));
-        }
-      }
-    }
-
-    return deckOfCards;
-  }
-
-  drawCard(index) {
-    return this.cards[index];
-  }
-
-  /**
-   * Randomize this.cards
-   */
-  shuffle() {
-    let i = 0, j = 0, temp = null;
-    for (i = this.cards.length - 1; i > 0; i -= 1) {
-      j = Math.floor(Math.random() * (i + 1))
-      temp = this.cards[i];
-      this.cards[i] = this.cards[j];
-      this.cards[j] = temp;
-    }
-  }
 }
 
 class CardComponent extends React.Component {
@@ -780,12 +568,12 @@ class War extends React.Component {
     let dealerSecondCard = dealer.getSecondCard();
     let gameStatus;
 
-    if(dealerFirstCard.value > playerFirstCard.value)
+    if(dealerFirstCard.getValue() > playerFirstCard.getValue())
     {
       // dealer wins on first card
       gameStatus = "Dealer";
     }
-    else if(dealerFirstCard.value < playerFirstCard.value)
+    else if(dealerFirstCard.getValue() < playerFirstCard.getValue())
     {
       // player wins on first card
       gameStatus = "Player";
@@ -803,7 +591,7 @@ class War extends React.Component {
       }
       else
       {
-        if(playerSecondCard.value >= dealerSecondCard.value)
+        if(playerSecondCard.getValue() >= dealerSecondCard.getValue())
         {
           // player wins War
           gameStatus = "Player";
@@ -830,15 +618,15 @@ class War extends React.Component {
     let dealer = this.state.dealer;
 
     let dealer1stCard = (dealer.getShowFirstCard()) ?
-      <CardComponent src={require('./cards/'+ dealer.getFirstCard().imageName)} location={{top: '0', left: '8%', right: '0', bottom: '60%'}} /> : null;
+      <CardComponent src={require('./cards/'+ dealer.getFirstCard().getImageName())} location={{top: '0', left: '8%', right: '0', bottom: '60%'}} /> : null;
     let dealer2ndCard = (dealer.getShowSecondCard()) ?
-      <CardComponent src={require('./cards/'+ dealer.getSecondCard().imageName)} location={{top: '0', left: '13%', right: '0', bottom: '55%'}} /> : null;
+      <CardComponent src={require('./cards/'+ dealer.getSecondCard().getImageName())} location={{top: '0', left: '13%', right: '0', bottom: '55%'}} /> : null;
 
     // populate 2nd Card when user decides to go to War
     let player1stCard = (player.getShowFirstCard()) ?
-      <CardComponent src={require('./cards/'+ player.getFirstCard().imageName)} location={{top: '35%', left: '30%', right: '0', bottom: '0'}} /> : null;
+      <CardComponent src={require('./cards/'+ player.getFirstCard().getImageName())} location={{top: '35%', left: '30%', right: '0', bottom: '0'}} /> : null;
     let player2ndCard = (player.getShowSecondCard()) ?
-      <CardComponent src={require('./cards/'+ player.getSecondCard().imageName)} location={{top: '40%', left: '35%', right: '0', bottom: '0'}} /> : null;
+      <CardComponent src={require('./cards/'+ player.getSecondCard().getImageName())} location={{top: '40%', left: '35%', right: '0', bottom: '0'}} /> : null;
 
 
     return (
@@ -879,7 +667,7 @@ class War extends React.Component {
     if(this.state.showButtons)
     {
       // tied and player needs to select war or surrender
-      if(playerFirstCard!= null && playerFirstCard.value === dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() === false)
+      if(playerFirstCard!= null && playerFirstCard.getValue() === dealerFirstCard.getValue() && playerSecondCard == null && player.getSurrenderStatus() === false)
       {
         buttonContainer = <div className="bottomright">
                             <CreateButton className="spacing" bsStyle="danger" onClick={() => this.onClickSurrender()} value={"Surrender"}/>
