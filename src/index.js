@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-//use as a timer to pause animation effect
+// use as a timer to pause animation effect
 const pause = {
   one: 1000,
   two: 2500,
@@ -107,13 +107,13 @@ class Player
   {
     if(ante === true)
     {
-        let anteBet = this.getAnteBet();
-        this.setBalance(this.getBalance() + anteBet);
+      let anteBet = this.getAnteBet();
+      this.setBalance(this.getBalance() + anteBet);
     }
     if(tie === true)
     {
-        let tieBet = this.getTieBet();
-        this.setBalance(this.getBalance() + (tieBet * 10));
+      let tieBet = this.getTieBet();
+      this.setBalance(this.getBalance() + (tieBet * 10));
     }
   }
 
@@ -220,9 +220,9 @@ class Deck {
 class CardComponent extends React.Component {
   render() {
     return (
-        <div className="cardHolder" style={this.props.location}>
-            <img className="maxImg" src={this.props.src} />
-        </div>
+      <div className="cardHolder" style={this.props.location}>
+        <img className="maxImg" src={this.props.src} />
+      </div>
     )
   }
 }
@@ -246,23 +246,23 @@ class BettingChipButton extends React.Component {
     let linkStyle;
     if (this.state.hover)
     {
-        linkStyle = {border: '3px solid yellow', 'border-radius': '50%'};
+      linkStyle = {border: '3px solid yellow', 'border-radius': '50%'};
     }
     else
     {
-        linkStyle = {border: 'none'};
+      linkStyle = {border: 'none'};
     }
 
     return (
-        <img className="maxImg" style={linkStyle} src={this.props.src}
-          onMouseEnter={() => this.toggleHover()}
-          onMouseLeave={() => this.toggleHover()}
-          onClick={this.props.onClick} />
+      <img className="maxImg" style={linkStyle} src={this.props.src}
+        onMouseEnter={() => this.toggleHover()}
+        onMouseLeave={() => this.toggleHover()}
+        onClick={this.props.onClick} />
     );
   }
 }
 
-//used to display chip stack in the betting slot (tie or ante)
+// used to display chip stack in the betting slot (tie or ante)
 class ChipStack extends React.Component {
   constructor(props) {
     super(props);
@@ -281,18 +281,18 @@ class ChipStack extends React.Component {
 
     for(let i = 0; i<denomination.length; i++)
     {
-        let currChipCount = Math.floor(chipRemainder / denomination[i]);
-        for(let t=0; t<currChipCount; t++)
-        {
-            let style = Object.assign({top: top+"%"}, this.props.style);
-            let currChipImg = <div className={this.props.baselocation} style={style}>
-                              <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("./chips/" + denomination[i] + "flat.png")} />
+      let currChipCount = Math.floor(chipRemainder / denomination[i]);
+      for(let t=0; t<currChipCount; t++)
+      {
+        let style = Object.assign({top: top+"%"}, this.props.style);
+        let currChipImg = <div className={this.props.baselocation} style={style}>
+                            <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("./chips/" + denomination[i] + "flat.png")} />
                            </div>;
-            chipStackHtml.push(currChipImg);
-            top = top - 1.5;
-        }
-        chipRemainder = chipRemainder % denomination[i];
-        if(chipRemainder === 0) break;
+        chipStackHtml.push(currChipImg);
+        top = top - 1.5;
+      }
+      chipRemainder = chipRemainder % denomination[i];
+      if(chipRemainder === 0) break;
     }
     return chipStackHtml;
   }
@@ -310,9 +310,11 @@ class BettingSlot extends React.Component {
 
     return (
       <div className="bettingSlotHolder" style={this.props.top}>
-        <img className={["maxImg", highlightClass].join(" ")}
-             src={this.props.src}
-             onClick={this.props.onClick} />
+        <img
+          className={["maxImg", highlightClass].join(" ")}
+          src={this.props.src}
+          onClick={this.props.onClick}
+        />
       </div>
     )
   }
@@ -340,7 +342,7 @@ class War extends React.Component {
     });
   }
 
-  //Add card dealing effect by using timer to show hide cards
+  // Add card dealing effect by using timer to show hide cards
   showHideCardAnimation(dealer1st, dealer2nd, player1st, player2nd, time)
   {
     let player = this.state.player;
@@ -365,7 +367,7 @@ class War extends React.Component {
     player.setWarBet(player.getAnteBet());
     player.setBalance(player.getBalance() - player.getWarBet());
     this.setState({
-        player: player,
+      player: player,
     });
   }
 
@@ -375,12 +377,12 @@ class War extends React.Component {
     setTimeout(() => {
       if(ante === true)
       {
-          player.setAnteAmountWon(player.getAnteBet());
+        player.setAnteAmountWon(player.getAnteBet());
       }
 
       if(tie === true)
       {
-          player.setTieAmountWon(player.getTieBet() * 10);
+        player.setTieAmountWon(player.getTieBet() * 10);
       }
 
       this.setState({
@@ -396,31 +398,32 @@ class War extends React.Component {
     setTimeout(() => {
       if(ante === true)
       {
-          player.setBalance(player.getBalance() + player.getAnteBet() + player.getWarBet());
-          this.payBet(true, false);
-          player.setAnteAmountWon(0);
-          player.setAnteBet(0);
-          player.setWarBet(0);
+        player.setBalance(player.getBalance() + player.getAnteBet() + player.getWarBet());
+        this.payBet(true, false);
+        player.setAnteAmountWon(0);
+        player.setAnteBet(0);
+        player.setWarBet(0);
       }
       else
       {
-          if(tie === false)//when tie is false, player is not at war. Ante/War bet can be removed.
-          {
-              player.setAnteBet(0);
-              player.setWarBet(0);
-          }
+        // when tie is false, player is not at war. Ante/War bet can be removed.
+        if(tie === false)
+        {
+          player.setAnteBet(0);
+          player.setWarBet(0);
+        }
       }
 
       if(tie === true)
       {
-          player.setBalance(player.getBalance() + player.getTieBet());
-          this.payBet(false, true);
-          player.setTieAmountWon(0);
-          player.setTieBet(0);
+        player.setBalance(player.getBalance() + player.getTieBet());
+        this.payBet(false, true);
+        player.setTieAmountWon(0);
+        player.setTieBet(0);
       }
       else
       {
-          player.setTieBet(0);
+        player.setTieBet(0);
       }
 
       this.setState({
@@ -436,14 +439,14 @@ class War extends React.Component {
     setTimeout(() => {
       if(initialAnteBet > 0 && player.getBalance() > initialAnteBet)
       {
-          player.setAnteBet(initialAnteBet);
-          player.setBalance(player.getBalance() - initialAnteBet);
+        player.setAnteBet(initialAnteBet);
+        player.setBalance(player.getBalance() - initialAnteBet);
       }
 
       if(initialTieBet > 0 && player.getBalance() > initialTieBet)
       {
-          player.setTieBet(initialTieBet);
-          player.setBalance(player.getBalance() - initialTieBet);
+        player.setTieBet(initialTieBet);
+        player.setBalance(player.getBalance() - initialTieBet);
       }
 
       this.setState({
@@ -459,13 +462,13 @@ class War extends React.Component {
 
     if(war === false && surrender === false)
     {
-        //call setPreviousTieBet so tiebet will be repoplulated with original bet size later
-        player.setPreviousTieBet(player.getTieBet());
-        this.setState({
-          player: player
-        });
+      // call setPreviousTieBet so tiebet will be repoplulated with original bet size later
+      player.setPreviousTieBet(player.getTieBet());
+      this.setState({
+        player: player
+      });
     }
-    //enable deal button after all cards have been dealt
+    // enable deal button after all cards have been dealt
     this.showButtonAfterDealing(pause.three);
 
     if(war === true)
@@ -475,9 +478,10 @@ class War extends React.Component {
 
     this.showBetPaid(wonAnte, wonTie);
     this.addBetBackToBalance(wonAnte, wonTie, surrender);
-    if(wonTie === false) //dealer and player are tied on first card. No need to repopulate bets yet
+    if(wonTie === false)
     {
-        this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet(), surrender);
+      // dealer and player are tied on first card. No need to repopulate bets yet
+      this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet(), surrender);
     }
   }
 
@@ -536,7 +540,7 @@ class War extends React.Component {
       return;
     }
 
-    //show player 1st card then show dealer 1st card after 1 sec for animation effects
+    // show player 1st card then show dealer 1st card after 1 sec for animation effects
     this.drawCards(true);
     this.showHideCardAnimation(true, false, true, false, pause.one);
 
@@ -564,11 +568,11 @@ class War extends React.Component {
     let player = this.state.player;
     if(player.getAnteBet() > player.getBalance())
     {
-        alert("You have insufficient funds for War");
-        return;
+      alert("You have insufficient funds for War");
+      return;
     }
 
-    //draw second cards the run card animation
+    // draw second cards the run card animation
     this.drawCards(false);
     this.showHideCardAnimation(true, true, true, true, pause.one);
     this.showHideCardAnimation(false, false, false, false, pause.two);
@@ -583,7 +587,7 @@ class War extends React.Component {
       this.showChipStackAnimation(false, false, true, false);
     }
 
-    //enable deal button after all cards have been dealt
+    // enable deal button after all cards have been dealt
     this.showButtonAfterDealing(pause.three);
   }
 
@@ -598,10 +602,10 @@ class War extends React.Component {
       showButtons: false
     });
 
-    //hide all card since player surrender and render chipstack
+    // hide all card since player surrender and render chipstack
     this.showHideCardAnimation(false, false, false, false, pause.two);
     this.showChipStackAnimation(false, false, false, true);
-    //enable deal button after all cards have been dealt
+    // enable deal button after all cards have been dealt
     this.showButtonAfterDealing(pause.two);
   }
 
@@ -610,13 +614,13 @@ class War extends React.Component {
     let selectedBet;
     if(this.state.selectAnteSlot)
     {
-        selectedBet = player.getAnteBet();
-        player.setAnteBet(0);
+      selectedBet = player.getAnteBet();
+      player.setAnteBet(0);
     }
     else
     {
-        selectedBet = player.getTieBet();
-        player.setTieBet(0);
+      selectedBet = player.getTieBet();
+      player.setTieBet(0);
     }
 
     player.setBalance(player.getBalance() + selectedBet);
@@ -643,15 +647,16 @@ class War extends React.Component {
       alert("You have insufficient funds");
       return;
     }
+
     if(this.state.selectAnteSlot)
     {
-        let currAnteBet = player.getAnteBet();
-        player.setAnteBet(currAnteBet + bet);
+      let currAnteBet = player.getAnteBet();
+      player.setAnteBet(currAnteBet + bet);
     }
     else
     {
-        let currTieBet = player.getTieBet();
-        player.setTieBet(currTieBet + bet);
+      let currTieBet = player.getTieBet();
+      player.setTieBet(currTieBet + bet);
     }
 
     player.setBalance(playerBalance - bet);
@@ -677,46 +682,51 @@ class War extends React.Component {
     let dealerSecondCard = dealer.getSecondCard();
     let gameStatus;
 
-    if(dealerFirstCard.value > playerFirstCard.value) //dealer wins
+    if(dealerFirstCard.value > playerFirstCard.value)
     {
+      // dealer wins on first card
       gameStatus = "Dealer";
     }
-    else if(dealerFirstCard.value < playerFirstCard.value) //player wins
+    else if(dealerFirstCard.value < playerFirstCard.value)
     {
+      // player wins on first card
       gameStatus = "Player";
     }
     else
     {
-        if(player.getSurrenderStatus() === true) //player surrender
+      if(player.getSurrenderStatus() === true)
+      {
+        // player surrender
+        gameStatus = "Dealer";
+      }
+      else if(playerSecondCard === null)
+      {
+          gameStatus = "Tied";
+      }
+      else
+      {
+        if(playerSecondCard.value >= dealerSecondCard.value)
         {
-          gameStatus = "Dealer";
-        }
-        else if(playerSecondCard === null) //tied
-        {
-            gameStatus = "Tied";
+          // player wins War
+          gameStatus = "Player";
         }
         else
         {
-            if(playerSecondCard.value >= dealerSecondCard.value) //player wins War
-            {
-              gameStatus = "Player";
-            }
-            else  //Dealer wins War
-            {
-              gameStatus = "Dealer";
-            }
+            // Dealer wins War
+            gameStatus = "Dealer";
         }
       }
+    }
 
-      return gameStatus;
+    return gameStatus;
   }
 
   renderCards() {
     if(this.state.drawnCards === 0)
     {
-        return (
-          null
-        )
+      return (
+        null
+      )
     }
     let player = this.state.player;
     let dealer = this.state.dealer;
@@ -726,7 +736,7 @@ class War extends React.Component {
     let dealer2ndCard = (dealer.getShowSecondCard()) ?
       <CardComponent src={require('./cards/'+ dealer.getSecondCard().imageName)} location={{top: '0', left: '13%', right: '0', bottom: '55%'}} /> : null;
 
-    //populate 2nd Card when user decides to go to War
+    // populate 2nd Card when user decides to go to War
     let player1stCard = (player.getShowFirstCard()) ?
       <CardComponent src={require('./cards/'+ player.getFirstCard().imageName)} location={{top: '35%', left: '30%', right: '0', bottom: '0'}} /> : null;
     let player2ndCard = (player.getShowSecondCard()) ?
@@ -735,11 +745,10 @@ class War extends React.Component {
 
     return (
       <div>
-          {dealer1stCard}
-          {dealer2ndCard}
-          {player1stCard}
-          {player2ndCard}
-
+        {dealer1stCard}
+        {dealer2ndCard}
+        {player1stCard}
+        {player2ndCard}
       </div>
     )
   }
@@ -747,12 +756,12 @@ class War extends React.Component {
   renderBettingChipButton()
   {
     return (
-        <div className="bettingChipHolder">
-            <BettingChipButton src={require('./chips/5top.png')} onClick={() => this.onClickBet(5)}/>
-            <BettingChipButton src={require('./chips/10top.png')} onClick={() => this.onClickBet(10)}/>
-            <BettingChipButton src={require('./chips/25top.png')} onClick={() => this.onClickBet(25)}/>
-            <BettingChipButton src={require('./chips/100top.png')} onClick={() => this.onClickBet(100)}/>
-        </div>
+      <div className="bettingChipHolder">
+        <BettingChipButton src={require('./chips/5top.png')} onClick={() => this.onClickBet(5)}/>
+        <BettingChipButton src={require('./chips/10top.png')} onClick={() => this.onClickBet(10)}/>
+        <BettingChipButton src={require('./chips/25top.png')} onClick={() => this.onClickBet(25)}/>
+        <BettingChipButton src={require('./chips/100top.png')} onClick={() => this.onClickBet(100)}/>
+      </div>
     )
   }
 
@@ -768,25 +777,25 @@ class War extends React.Component {
 
     if(this.state.showButtons)
     {
-        //tied and player needs to select war or surrender
-        if(playerFirstCard!= null && playerFirstCard.value === dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() === false) //War
-        {
-            buttonContainer = <div className="bottomright">
-                                <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
-                                <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
-                              </div>;
-        }
-        else
-        {
-            buttonContainer = <div>
-                              {this.renderBettingChipButton()}
-                              <div className="bottomright">
-                                 <CreateButton onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
-                                 <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
-                                 <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
-                               </div>
-                            </div>;
-        }
+      // tied and player needs to select war or surrender
+      if(playerFirstCard!= null && playerFirstCard.value === dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() === false)
+      {
+        buttonContainer = <div className="bottomright">
+                            <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
+                            <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
+                          </div>;
+      }
+      else
+      {
+        buttonContainer = <div>
+                            {this.renderBettingChipButton()}
+                            <div className="bottomright">
+                              <CreateButton onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
+                              <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
+                              <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
+                            </div>
+                          </div>;
+      }
     }
     return buttonContainer;
   }
@@ -794,52 +803,52 @@ class War extends React.Component {
   renderButtonLayout()
   {
     return (
-        <div>
-          {this.renderFunctionalButton()}
-        </div>
+      <div>
+        {this.renderFunctionalButton()}
+      </div>
     )
   }
 
   renderPlayerBet()
   {
-      let player = this.state.player;
-      return (
-          <div>
-            <ChipStack chipcount={player.getTieBet()} baselocation={"chipstack"} top={23} />
-            <ChipStack chipcount={player.getTieAmountWon()} baselocation={"chipstack"} top={23} style={{right: "11%"}} />
-            <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={55} />
-            <ChipStack chipcount={player.getWarBet()} baselocation={"chipstack"} top={55} style={{left: "11%"}}/>
-            <ChipStack chipcount={player.getAnteAmountWon()} baselocation={"chipstack"} top={55} style={{right: "11%"}} />
-          </div>
-      )
+    let player = this.state.player;
+    return (
+      <div>
+        <ChipStack chipcount={player.getTieBet()} baselocation={"chipstack"} top={23} />
+        <ChipStack chipcount={player.getTieAmountWon()} baselocation={"chipstack"} top={23} style={{right: "11%"}} />
+        <ChipStack chipcount={player.getAnteBet()} baselocation={"chipstack"} top={55} />
+        <ChipStack chipcount={player.getWarBet()} baselocation={"chipstack"} top={55} style={{left: "11%"}}/>
+        <ChipStack chipcount={player.getAnteAmountWon()} baselocation={"chipstack"} top={55} style={{right: "11%"}} />
+      </div>
+    )
   }
 
   renderBettingSlots()
   {
-      return (
-        <div>
-            <BettingSlot
-              highlight={!this.state.selectAnteSlot}
-              top={{top: '23%'}}
-              src={require("./table/Tie.png")}
-              onClick={() => this.onSelectBettingSlot()} />
-            <BettingSlot
-              highlight={this.state.selectAnteSlot}
-              top={{top: '55%'}}
-              src={require("./table/Ante.png")}
-              onClick={() => this.onSelectBettingSlot()} />
-        </div>
-      )
+    return (
+      <div>
+        <BettingSlot
+          highlight={!this.state.selectAnteSlot}
+          top={{top: '23%'}}
+          src={require("./table/Tie.png")}
+          onClick={() => this.onSelectBettingSlot()} />
+        <BettingSlot
+          highlight={this.state.selectAnteSlot}
+          top={{top: '55%'}}
+          src={require("./table/Ante.png")}
+          onClick={() => this.onSelectBettingSlot()} />
+      </div>
+    )
   }
 
   renderPlayerBalance()
   {
-      let player = this.state.player;
-      return (
-        <div className="chipstack">
-          <p>Player's Balance {player.getBalance()}</p>
-        </div>
-      )
+    let player = this.state.player;
+    return (
+      <div className="chipstack">
+        <p>Player's Balance {player.getBalance()}</p>
+      </div>
+    )
   }
 
   render() {
