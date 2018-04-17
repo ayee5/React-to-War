@@ -630,8 +630,6 @@ class War extends React.Component {
     this.setState({
       drawnCards : 0,
       deck: new Deck(deckNum),
-      player: new Player(),
-      dealer: new Player(),
       showButtons: true
     });
   }
