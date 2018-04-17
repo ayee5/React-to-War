@@ -728,9 +728,9 @@ class War extends React.Component {
 
     //populate 2nd Card when user decides to go to War
     let player1stCard = (player.getShowFirstCard()) ?
-      <CardComponent src={require('./cards/'+ player.getFirstCard().imageName)} location={{top: '35%', left: '25%', right: '0', bottom: '0'}} /> : null;
+      <CardComponent src={require('./cards/'+ player.getFirstCard().imageName)} location={{top: '35%', left: '30%', right: '0', bottom: '0'}} /> : null;
     let player2ndCard = (player.getShowSecondCard()) ?
-      <CardComponent src={require('./cards/'+ player.getSecondCard().imageName)} location={{top: '40%', left: '30%', right: '0', bottom: '0'}} /> : null;
+      <CardComponent src={require('./cards/'+ player.getSecondCard().imageName)} location={{top: '40%', left: '35%', right: '0', bottom: '0'}} /> : null;
 
 
     return (
