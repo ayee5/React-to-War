@@ -177,9 +177,28 @@ class War extends React.Component {
 
     setTimeout(() => {
       dealer.setShowFirstCard(dealer1st);
+      if(dealer1st == false)
+      {
+        dealer.setFirstCard(null);
+      }
+
       dealer.setShowSecondCard(dealer2nd);
+      if(dealer2nd == false)
+      {
+        dealer.setSecondCard(null);
+      }
+
       player.setShowFirstCard(player1st);
+      if(player1st == false)
+      {
+        player.setFirstCard(null);
+      }
+
       player.setShowSecondCard(player2nd);
+      if(player2nd == false)
+      {
+        player.setSecondCard(null);
+      }
 
       this.setState({
         dealer: dealer,
@@ -332,7 +351,9 @@ class War extends React.Component {
 
     this.showBetPaid(wonAnte, wonTie);
     this.addBetBackToBalance(wonAnte, wonTie, surrender);
-    if(wonTie === false)
+    // when ante bet is 0, player is only playing tie so we can repoplulate.
+    // when tie is not won then either player or dealer won so we can repopulate
+    if(wonTie === false || player.getAnteBet() == 0)
     {
       // dealer and player are tied on first card. No need to repopulate bets yet
       this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet(), surrender);
@@ -414,7 +435,6 @@ class War extends React.Component {
     {
       this.showHideCardAnimation(false, false, false, false, pause.two);
       this.showChipStackAnimation(true, false, false, false);
-
     }
     else if(gameStatus === "Dealer")
     {
@@ -423,6 +443,11 @@ class War extends React.Component {
     }
     else if(gameStatus === "Tied")
     {
+      //when player only place a tie bet no need to go to war or surrender
+      if(player.getAnteBet() == 0)
+      {
+        this.showHideCardAnimation(false, false, false, false, pause.two);
+      }
       this.showChipStackAnimation(false, true, false, false);
     }
   }
