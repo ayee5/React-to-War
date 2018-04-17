@@ -186,6 +186,11 @@ class Deck {
     this.shuffle();
   }
 
+  /**
+   * Initialize deck of cards
+   *
+   * @param {integer} deckNum
+   */
   initializeDeck(deckNum) {
     const suits = ["Spade", "Heart", "Club", "Diamond"];
     const ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"];
@@ -206,6 +211,9 @@ class Deck {
     return this.cards[index];
   }
 
+  /**
+   * Randomize this.cards
+   */
   shuffle() {
     let i = 0, j = 0, temp = null;
     for (i = this.cards.length - 1; i > 0; i -= 1) {
@@ -254,7 +262,9 @@ class BettingChipButton extends React.Component {
     }
 
     return (
-      <img className="maxImg" style={linkStyle} src={this.props.src}
+      <img
+        className="maxImg" style={linkStyle}
+        src={this.props.src}
         onMouseEnter={() => this.toggleHover()}
         onMouseLeave={() => this.toggleHover()}
         onClick={this.props.onClick} />
@@ -272,6 +282,10 @@ class ChipStack extends React.Component {
     };
   }
 
+  /**
+   * Given an amount of money (props.chipcount),
+   * Calculate the optimal chip denomination of that chip stack.
+   */
   buildChipStack()
   {
     let chipRemainder = this.props.chipcount;
@@ -304,6 +318,7 @@ class ChipStack extends React.Component {
   }
 }
 
+// tie and ante betting slot component
 class BettingSlot extends React.Component {
   render() {
     let highlightClass = (this.props.highlight) ? "bettingSlotHighlight" : "";
@@ -333,6 +348,12 @@ class War extends React.Component {
     };
   }
 
+  /**
+   * Increase player's balance when player wins ante or tie bet
+   *
+   * @param {boolean} ante - ante bet
+   * @param {boolean} tie - tie bet
+   */
   payBet(ante, tie)
   {
     let player = this.state.player;
@@ -342,7 +363,15 @@ class War extends React.Component {
     });
   }
 
-  // Add card dealing effect by using timer to show hide cards
+  /**
+   * Used to show card image with a delay
+   *
+   * @param {boolean} dealer1st - dealer first card
+   * @param {boolean} dealer2nd - dealer second card
+   * @param {boolean} player1st - player first card
+   * @param {boolean} player2nd - player second card
+   * @param {boolean} time - the amount of millisecond to delay showing of card
+   */
   showHideCardAnimation(dealer1st, dealer2nd, player1st, player2nd, time)
   {
     let player = this.state.player;
@@ -361,6 +390,9 @@ class War extends React.Component {
     }, time);
   }
 
+  /**
+   * Player has entered war and places war bet
+   */
   placeWarBet()
   {
     let player = this.state.player;
@@ -371,6 +403,11 @@ class War extends React.Component {
     });
   }
 
+  /**
+   * Show amount won
+   * @param {boolean} ante - show ante wager won
+   * @param {boolean} tie - show tie wager won
+   */
   showBetPaid(ante, tie)
   {
     let player = this.state.player;
@@ -392,6 +429,12 @@ class War extends React.Component {
     }, pause.one);
   }
 
+  /**
+   * Add bet back to balance after hand is completed
+   * @param {boolean} ante - add ante bet back to balance
+   * @param {boolean} tie - add tie bet back to balance
+   * @param {boolean} surrender - surrender status
+   */
   addBetBackToBalance(ante, tie, surrender)
   {
     let player = this.state.player;
@@ -433,6 +476,12 @@ class War extends React.Component {
     }, (surrender) ? pause.one : pause.two);
   }
 
+  /**
+   * Repopulate original wager
+   * @param {boolean} initialAnteBet - the amount to repopulate ante wager
+   * @param {boolean} initialTieBet - the amount to repopulate ante wager
+   * @param {boolean} surrender - repopulate wager after surrender
+   */
   repopulateInitialBet(initialAnteBet, initialTieBet, surrender)
   {
     let player = this.state.player;
@@ -456,6 +505,13 @@ class War extends React.Component {
     }, (surrender) ? pause.two : pause.three);
   }
 
+  /**
+   * Wrapper function that shows bet won, adds player balance, then repopuates original wager
+   * @param {boolean} wonAnte - player wins ante wager
+   * @param {boolean} wonTie - player wins tie wager
+   * @param {boolean} war - player is in war state
+   * @param {boolean} surrender - player is in surrender state
+   */
   showChipStackAnimation(wonAnte, wonTie, war, surrender)
   {
     let player = this.state.player;
@@ -485,6 +541,10 @@ class War extends React.Component {
     }
   }
 
+  /**
+   * Show buttons after hand have been completed
+   * @param {integer} time - show buttons in X millisecond
+   */
   showButtonAfterDealing(time)
   {
     setTimeout(() => {
@@ -494,6 +554,10 @@ class War extends React.Component {
     }, time);
   }
 
+  /**
+   * Draw first or second card
+   * @param {boolean} firstCard - Draw first card when true. When false draw second card
+   */
   drawCards(firstCard)
   {
     let dealer = this.state.dealer;
@@ -526,6 +590,9 @@ class War extends React.Component {
     });
   }
 
+  /**
+   * Callback to draw first card
+   */
   onClickDrawInitialCard() {
     if(this.state.drawnCards >= this.state.deck.cards.length - 4)
     {
@@ -562,6 +629,9 @@ class War extends React.Component {
     }
   }
 
+  /**
+   * Callback to go to war and draw second card
+   */
   onClickWar() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
@@ -591,6 +661,9 @@ class War extends React.Component {
     this.showButtonAfterDealing(pause.three);
   }
 
+  /**
+   * Callback to surrender
+   */
   onClickSurrender() {
     if(this.state.drawnCards >= this.state.deck.cards.length) return;
 
@@ -609,6 +682,9 @@ class War extends React.Component {
     this.showButtonAfterDealing(pause.two);
   }
 
+  /**
+   * Callback to remove ante or tie bet
+   */
   onClickClearBet() {
     let player = this.state.player;
     let selectedBet;
@@ -629,6 +705,9 @@ class War extends React.Component {
     });
   }
 
+  /**
+   * Callback to shuffle deck when empty
+   */
   onClickShuffle() {
     let deckNum = this.state.deck.deckNum;
     this.setState({
@@ -638,6 +717,9 @@ class War extends React.Component {
     });
   }
 
+  /**
+   * Callback to place bet in tie or ante slot
+   */
   onClickBet(bet) {
     let player = this.state.player;
     let playerBalance = player.getBalance();
@@ -665,12 +747,18 @@ class War extends React.Component {
     });
   }
 
+  /**
+   * Callback to select ante or tie slot
+   */
   onSelectBettingSlot() {
     this.setState({
       selectAnteSlot: !this.state.selectAnteSlot
     });
   }
 
+  /**
+   * Determine the winner at any stage of the game. Eg initial card, war, surrender, tie
+   */
   determineGameStatus()
   {
     let player = this.state.player;
@@ -765,6 +853,9 @@ class War extends React.Component {
     )
   }
 
+  /**
+   * Render all button. Eg draw card, shuffle, clear bet, war...
+   */
   renderFunctionalButton()
   {
     let buttonContainer;
@@ -798,15 +889,6 @@ class War extends React.Component {
       }
     }
     return buttonContainer;
-  }
-
-  renderButtonLayout()
-  {
-    return (
-      <div>
-        {this.renderFunctionalButton()}
-      </div>
-    )
   }
 
   renderPlayerBet()
@@ -855,7 +937,7 @@ class War extends React.Component {
     return (
       <div className="main">
         <img className="table" src={require('./table/table.png')} />
-        {this.renderButtonLayout()}
+        {this.renderFunctionalButton()}
         {this.renderCards()}
         {this.renderPlayerBet()}
         {this.renderBettingSlots()}
