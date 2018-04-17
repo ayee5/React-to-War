@@ -457,6 +457,17 @@ class War extends React.Component {
   {
     let player = this.state.player;
 
+    if(war === false && surrender === false)
+    {
+        //call setPreviousTieBet so tiebet will be repoplulated with original bet size later
+        player.setPreviousTieBet(player.getTieBet());
+        this.setState({
+          player: player
+        });
+    }
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(pause.three);
+
     if(war === true)
     {
         this.placeWarBet();
@@ -479,6 +490,38 @@ class War extends React.Component {
     }, time);
   }
 
+  drawCards(firstCard)
+  {
+    let dealer = this.state.dealer;
+    let player = this.state.player;
+    let currDeck = this.state.deck;
+    let dealerCard = currDeck.drawCard(this.state.drawnCards);
+    let playerCard = currDeck.drawCard(this.state.drawnCards+1);
+
+    if(firstCard === true)
+    {
+      player.setFirstCard(playerCard);
+      player.setSecondCard(null);
+      player.setSurrenderStatus(false);
+      player.setShowFirstCard(true);
+      dealer.setFirstCard(dealerCard);
+      dealer.setSecondCard(null);
+    }
+    else
+    {
+      player.setSecondCard(playerCard);
+      player.setShowSecondCard(true);
+      dealer.setSecondCard(dealerCard);
+    }
+
+    this.setState({
+      drawnCards:this.state.drawnCards + 2,
+      player: player,
+      dealer: dealer,
+      showButtons: false
+    });
+  }
+
   onClickDrawInitialCard() {
     if(this.state.drawnCards >= this.state.deck.cards.length - 4)
     {
@@ -493,33 +536,10 @@ class War extends React.Component {
       return;
     }
 
-    //set previous tie amount betted in case tie bet gets paid out and we still need to repopulate later
-    player.setPreviousTieBet(player.getTieBet());
-
-    let currDeck = this.state.deck;
-    let dealerFirstCard = currDeck.drawCard(this.state.drawnCards);
-    let playerFirstCard = currDeck.drawCard(this.state.drawnCards+1);
-
-    player.setFirstCard(playerFirstCard);
-    player.setSecondCard(null);
-    player.setSurrenderStatus(false);
-    player.setShowFirstCard(true);
-
-    let dealer = this.state.dealer;
-    dealer.setFirstCard(dealerFirstCard);
-    dealer.setSecondCard(null);
-
-    this.setState({
-      drawnCards:this.state.drawnCards + 2,
-      player: player,
-      dealer: dealer,
-      showButtons: false
-    });
-
-    //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(pause.three);
     //show player 1st card then show dealer 1st card after 1 sec for animation effects
+    this.drawCards(true);
     this.showHideCardAnimation(true, false, true, false, pause.one);
+
     let gameStatus = this.determineGameStatus();
     if(gameStatus === "Player")
     {
@@ -548,26 +568,8 @@ class War extends React.Component {
         return;
     }
 
-    let currDeck = this.state.deck;
-    let dealerSecondCard = currDeck.drawCard(this.state.drawnCards);
-    let playerSecondCard = currDeck.drawCard(this.state.drawnCards+1);
-
-    player.setSecondCard(playerSecondCard);
-    player.setShowSecondCard(true);
-
-    let dealer = this.state.dealer;
-    dealer.setSecondCard(dealerSecondCard);
-
-    this.setState({
-      drawnCards:this.state.drawnCards + 2,
-      player: player,
-      dealer: dealer,
-      showButtons: false
-    });
-
-    //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(pause.three);
-    //show all cards then hide
+    //draw second cards the run card animation
+    this.drawCards(false);
     this.showHideCardAnimation(true, true, true, true, pause.one);
     this.showHideCardAnimation(false, false, false, false, pause.two);
 
@@ -580,6 +582,9 @@ class War extends React.Component {
     {
       this.showChipStackAnimation(false, false, true, false);
     }
+
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(pause.three);
   }
 
   onClickSurrender() {
@@ -593,14 +598,11 @@ class War extends React.Component {
       showButtons: false
     });
 
-    //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(pause.two);
     //hide all card since player surrender and render chipstack
     this.showHideCardAnimation(false, false, false, false, pause.two);
     this.showChipStackAnimation(false, false, false, true);
-    this.setState({
-      player: player,
-    });
+    //enable deal button after all cards have been dealt
+    this.showButtonAfterDealing(pause.two);
   }
 
   onClickClearBet() {
