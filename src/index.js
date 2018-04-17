@@ -5,8 +5,8 @@ import './index.css';
 //use as a timer to pause animation effect
 const pause = {
   one: 1000,
-  two: 2000,
-  three: 3000
+  two: 2500,
+  three: 3500
 }
 
 function CreateButton(props) {
@@ -390,7 +390,7 @@ class War extends React.Component {
     }, pause.one);
   }
 
-  addBetBackToBalance(ante, tie)
+  addBetBackToBalance(ante, tie, surrender)
   {
     let player = this.state.player;
     setTimeout(() => {
@@ -427,10 +427,10 @@ class War extends React.Component {
         player: player,
       });
 
-    }, pause.two);
+    }, (surrender) ? pause.one : pause.two);
   }
 
-  repopulateInitialBet(initialAnteBet, initialTieBet)
+  repopulateInitialBet(initialAnteBet, initialTieBet, surrender)
   {
     let player = this.state.player;
     setTimeout(() => {
@@ -450,10 +450,10 @@ class War extends React.Component {
         player: player,
       });
 
-    }, pause.three);
+    }, (surrender) ? pause.two : pause.three);
   }
 
-  showChipStackAnimation(wonAnte, wonTie, war)
+  showChipStackAnimation(wonAnte, wonTie, war, surrender)
   {
     let player = this.state.player;
 
@@ -463,10 +463,10 @@ class War extends React.Component {
     }
 
     this.showBetPaid(wonAnte, wonTie);
-    this.addBetBackToBalance(wonAnte, wonTie);
+    this.addBetBackToBalance(wonAnte, wonTie, surrender);
     if(wonTie === false) //dealer and player are tied on first card. No need to repopulate bets yet
     {
-        this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet());
+        this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet(), surrender);
     }
   }
 
@@ -524,17 +524,17 @@ class War extends React.Component {
     if(gameStatus === "Player")
     {
       this.showHideCardAnimation(false, false, false, false, pause.two);
-      this.showChipStackAnimation(true, false, false);
+      this.showChipStackAnimation(true, false, false, false);
 
     }
     else if(gameStatus === "Dealer")
     {
       this.showHideCardAnimation(false, false, false, false, pause.two);
-      this.showChipStackAnimation(false, false, false);
+      this.showChipStackAnimation(false, false, false, false);
     }
     else if(gameStatus === "Tied")
     {
-      this.showChipStackAnimation(false, true, false);
+      this.showChipStackAnimation(false, true, false, false);
     }
   }
 
@@ -566,7 +566,7 @@ class War extends React.Component {
     });
 
     //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(pause.two);
+    this.showButtonAfterDealing(pause.three);
     //show all cards then hide
     this.showHideCardAnimation(true, true, true, true, pause.one);
     this.showHideCardAnimation(false, false, false, false, pause.two);
@@ -574,13 +574,12 @@ class War extends React.Component {
     let gameStatus = this.determineGameStatus();
     if(gameStatus === "Player")
     {
-      this.showChipStackAnimation(true, false, true);
+      this.showChipStackAnimation(true, false, true, false);
     }
     else if(gameStatus === "Dealer")
     {
-      this.showChipStackAnimation(false, false, true);
+      this.showChipStackAnimation(false, false, true, false);
     }
-
   }
 
   onClickSurrender() {
@@ -595,10 +594,10 @@ class War extends React.Component {
     });
 
     //enable deal button after all cards have been dealt
-    this.showButtonAfterDealing(pause.three);
+    this.showButtonAfterDealing(pause.two);
     //hide all card since player surrender and render chipstack
     this.showHideCardAnimation(false, false, false, false, pause.two);
-    this.showChipStackAnimation(false, false, false);
+    this.showChipStackAnimation(false, false, false, true);
     this.setState({
       player: player,
     });
