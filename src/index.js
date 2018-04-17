@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import Bootstrap from 'bootstrap/dist/css/bootstrap.css';
+import { Button } from 'react-bootstrap';
 
 // use as a timer to pause animation effect
 const pause = {
@@ -11,9 +13,11 @@ const pause = {
 
 function CreateButton(props) {
   return (
-    <button className={props.className} onClick={props.onClick}>
-      {props.value}
-    </button>
+    <Button
+      className={props.className}
+      bsStyle={props.bsStyle}
+      onClick={props.onClick}>{props.value}
+    </Button>
   );
 }
 
@@ -878,8 +882,8 @@ class War extends React.Component {
       if(playerFirstCard!= null && playerFirstCard.value === dealerFirstCard.value && playerSecondCard == null && player.getSurrenderStatus() === false)
       {
         buttonContainer = <div className="bottomright">
-                            <CreateButton onClick={() => this.onClickWar()} value={"Go To War"}/>
-                            <CreateButton onClick={() => this.onClickSurrender()} value={"Surrender"}/>
+                            <CreateButton className="spacing" bsStyle="danger" onClick={() => this.onClickSurrender()} value={"Surrender"}/>
+                            <CreateButton className="spacing" bsStyle="success" onClick={() => this.onClickWar()} value={"Go To War"}/>
                           </div>;
       }
       else
@@ -887,9 +891,9 @@ class War extends React.Component {
         buttonContainer = <div>
                             {this.renderBettingChipButton()}
                             <div className="bottomright">
-                              <CreateButton onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
-                              <CreateButton onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
-                              <CreateButton onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
+                              <CreateButton className="spacing" bsStyle="info" onClick={() => this.onClickShuffle()} value={"Shuffle"}/>
+                              <CreateButton className="spacing" bsStyle="warning" onClick={() => this.onClickClearBet()} value={"Clear Bet"}/>
+                              <CreateButton className="spacing" bsStyle="success" onClick={() => this.onClickDrawInitialCard()} value={"Deal"}/>
                             </div>
                           </div>;
       }
