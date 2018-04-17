@@ -937,8 +937,8 @@ class War extends React.Component {
   {
     let player = this.state.player;
     return (
-      <div className="chipstack">
-        <p>Player's Balance {player.getBalance()}</p>
+      <div className="balanceLocation">
+        <p className="balanceText">Balance: <em>{player.getBalance()}</em></p>
       </div>
     )
   }

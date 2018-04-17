@@ -54,6 +54,35 @@ body
   z-index: 2
 }
 
+.balanceLocation
+{
+  position: absolute;
+  width: 15%;
+  height: 4%;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 95%;
+  bottom: 95%;
+  z-index: 3;
+}
+
+.balanceText
+{
+  padding: 7px;
+  border-radius: 25px;
+  border-style: solid;
+  border-color: black;
+  background-color: #DCDCDC;
+  position: absolute;
+  font-size: 20pt;
+}
+
+.balanceText em {
+  color: green;
+  font-weight: bold;
+}
+
 /* start ante top around 45% decrease by 1 with each additional chip*/
 /* start tied top around 25% decrease by 1 with each additional chip*/
 .chipstack
