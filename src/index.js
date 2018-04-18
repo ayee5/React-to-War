@@ -303,13 +303,13 @@ class War extends React.Component {
   {
     let player = this.state.player;
     setTimeout(() => {
-      if(initialAnteBet > 0 && player.getBalance() > initialAnteBet)
+      if(initialAnteBet > 0 && player.getBalance() >= initialAnteBet)
       {
         player.setAnteBet(initialAnteBet);
         player.setBalance(player.getBalance() - initialAnteBet);
       }
 
-      if(initialTieBet > 0 && player.getBalance() > initialTieBet)
+      if(initialTieBet > 0 && player.getBalance() >= initialTieBet)
       {
         player.setTieBet(initialTieBet);
         player.setBalance(player.getBalance() - initialTieBet);
