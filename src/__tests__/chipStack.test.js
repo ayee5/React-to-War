@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow, mount, render } from 'enzyme';
-import ChipStack from '../components/ChipStack.jsx';
+import ChipStack from '../components/chipStack.jsx';
 
 describe('ChipStack', () => {
   const stackOfFourty = <ChipStack chipcount={40} baselocation={"chipstack"} top={23} />;
