@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 // used to display chip stack in the betting slot (tie or ante)
 class ChipStack extends React.Component {
@@ -28,7 +27,7 @@ class ChipStack extends React.Component {
       for(let t=0; t<currChipCount; t++)
       {
         let style = Object.assign({top: top+"%"}, this.props.style);
-        let currChipImg = <div className={this.props.baselocation} style={style}>
+        let currChipImg = <div key={i + "_" + t} className={this.props.baselocation} style={style}>
                             <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("../img/chips/" + denomination[i] + "flat.png")} />
                            </div>;
         chipStackHtml.push(currChipImg);
