@@ -26,7 +26,7 @@ class CardComponent extends React.Component {
   render() {
     return (
       <div className="cardHolder" style={this.props.location}>
-        <img className="maxImg" src={this.props.src} />
+        <img alt="" className="maxImg" src={this.props.src} />
       </div>
     )
   }
@@ -40,6 +40,7 @@ class BettingSlot extends React.Component {
     return (
       <div className="bettingSlotHolder" style={this.props.top}>
         <img
+          alt=""
           className={["maxImg", highlightClass].join(" ")}
           src={this.props.src}
           onClick={this.props.onClick}
@@ -93,25 +94,25 @@ class War extends React.Component {
 
     setTimeout(() => {
       dealer.setShowFirstCard(dealer1st);
-      if(dealer1st == false)
+      if(dealer1st === false)
       {
         dealer.setFirstCard(null);
       }
 
       dealer.setShowSecondCard(dealer2nd);
-      if(dealer2nd == false)
+      if(dealer2nd === false)
       {
         dealer.setSecondCard(null);
       }
 
       player.setShowFirstCard(player1st);
-      if(player1st == false)
+      if(player1st === false)
       {
         player.setFirstCard(null);
       }
 
       player.setShowSecondCard(player2nd);
-      if(player2nd == false)
+      if(player2nd === false)
       {
         player.setSecondCard(null);
       }
@@ -269,7 +270,7 @@ class War extends React.Component {
     this.addBetBackToBalance(wonAnte, wonTie, surrender);
     // when ante bet is 0, player is only playing tie so we can repoplulate.
     // when tie is not won then either player or dealer won so we can repopulate
-    if(wonTie === false || player.getAnteBet() == 0)
+    if(wonTie === false || player.getAnteBet() === 0)
     {
       // dealer and player are tied on first card. No need to repopulate bets yet
       this.repopulateInitialBet(player.getAnteBet(), player.getPreviousTieBet(), surrender);
@@ -336,7 +337,7 @@ class War extends React.Component {
     }
 
     let player = this.state.player;
-    if(player.getAnteBet() == 0 && player.getTieBet() == 0)
+    if(player.getAnteBet() === 0 && player.getTieBet() === 0)
     {
       alert("Place your bet");
       return;
@@ -360,7 +361,7 @@ class War extends React.Component {
     else if(gameStatus === "Tied")
     {
       //when player only place a tie bet no need to go to war or surrender
-      if(player.getAnteBet() == 0)
+      if(player.getAnteBet() === 0)
       {
         this.showHideCardAnimation(false, false, false, false, pause.two);
       }
@@ -675,7 +676,7 @@ class War extends React.Component {
   render() {
     return (
       <div className="main">
-        <img className="table" src={require('../img/table/table.png')} />
+        <img alt="" className="table" src={require('../img/table/table.png')} />
         {this.renderFunctionalButton()}
         {this.renderCards()}
         {this.renderPlayerBet()}

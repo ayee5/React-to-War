@@ -28,7 +28,7 @@ class ChipStack extends React.Component {
       {
         let style = Object.assign({top: top+"%"}, this.props.style);
         let currChipImg = <div key={i + "_" + t} className={this.props.baselocation} style={style}>
-                            <img className={["maxImg", "flatChipBorder"].join(' ')} src={require("../img/chips/" + denomination[i] + "flat.png")} />
+                            <img alt="" className={["maxImg", "flatChipBorder"].join(' ')} src={require("../img/chips/" + denomination[i] + "flat.png")} />
                            </div>;
         chipStackHtml.push(currChipImg);
         top = top - 1.5;

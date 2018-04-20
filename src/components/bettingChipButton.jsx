@@ -28,6 +28,7 @@ class BettingChipButton extends React.Component {
 
     return (
       <img
+        alt=""
         className="maxImg" style={linkStyle}
         src={this.props.src}
         onMouseEnter={() => this.toggleHover()}
